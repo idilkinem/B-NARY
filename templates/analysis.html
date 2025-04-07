@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kan Tahlili Analizi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .analysis-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #2c3e50;
+            padding: 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            background: #ffffff;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        .form-control::placeholder {
+            color: #95a5a6;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .file-upload {
+            background: #f8f9fa;
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            background: #f1f8f1;
+            border-color: #45a049;
+        }
+        .file-upload i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ffffff;
+            border: none;
+            color: #2c3e50;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .back-button:hover {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+        .section-title {
+            color: #4CAF50;
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(76, 175, 80, 0.3);
+        }
+        .form-check {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .form-check-input:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .form-select {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #2c3e50;
+        }
+        .form-select:focus {
+            background: #ffffff;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        .form-select option {
+            background: #ffffff;
+            color: #2c3e50;
+        }
+        .text-muted {
+            color: #95a5a6 !important;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}" class="back-button">
+        <i class="fas fa-arrow-left me-2"></i>Ana Sayfa
+    </a>
+
+    <div class="container">
+        <div class="analysis-container">
+            <h1 class="form-title">Kan Tahlili Analizi</h1>
+            <form action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data">
+                <h3 class="section-title">Kişisel Bilgiler</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Ad</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Soyad</label>
+                            <input type="text" class="form-control" name="surname" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">T.C. Kimlik No</label>
+                            <input type="text" class="form-control" name="tc" required pattern="[0-9]{11}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Doğum Tarihi</label>
+                            <input type="date" class="form-control" name="birth_date" required>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Fiziksel Bilgiler</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Kilo (kg)</label>
+                            <input type="number" class="form-control" name="weight" required step="0.1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Boy (cm)</label>
+                            <input type="number" class="form-control" name="height" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Kan Grubu</label>
+                            <select class="form-control" name="blood_type" required>
+                                <option value="">Seçiniz</option>
+                                <option value="A+">A Rh+</option>
+                                <option value="A-">A Rh-</option>
+                                <option value="B+">B Rh+</option>
+                                <option value="B-">B Rh-</option>
+                                <option value="AB+">AB Rh+</option>
+                                <option value="AB-">AB Rh-</option>
+                                <option value="0+">0 Rh+</option>
+                                <option value="0-">0 Rh-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Cinsiyet</label>
+                            <select class="form-control" name="gender" required>
+                                <option value="">Seçiniz</option>
+                                <option value="male">Erkek</option>
+                                <option value="female">Kadın</option>
+                                <option value="other">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Sağlık Bilgileri</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Kronik Hastalıklar</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="diabetes">
+                                <label class="form-check-label">Diyabet</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="hypertension">
+                                <label class="form-check-label">Hipertansiyon</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="heart_disease">
+                                <label class="form-check-label">Kalp Hastalığı</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="asthma">
+                                <label class="form-check-label">Astım</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="copd">
+                                <label class="form-check-label">KOAH</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="bronchitis">
+                                <label class="form-check-label">Kronik Bronşit</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="chronic_diseases" value="none">
+                                <label class="form-check-label">Yok</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Alerjiler</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="food">
+                                <label class="form-check-label">Gıda Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="drug">
+                                <label class="form-check-label">İlaç Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="pollen">
+                                <label class="form-check-label">Polen Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="dust">
+                                <label class="form-check-label">Toz Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="animal">
+                                <label class="form-check-label">Hayvan Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="mold">
+                                <label class="form-check-label">Küf Alerjisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="allergies" value="none">
+                                <label class="form-check-label">Yok</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Düzenli Kullanılan İlaçlar</label>
+                            <textarea class="form-control" name="medications" rows="3" placeholder="Varsa yazınız"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Son 6 Ayda Geçirilen Önemli Hastalıklar</label>
+                            <textarea class="form-control" name="recent_illnesses" rows="3" placeholder="Varsa yazınız"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Kan Tahlili Sonuçları</h3>
+                <div class="form-group">
+                    <label class="form-label">Kan Tahlili Sonuçları</label>
+                    <div class="file-upload">
+                        <input type="file" name="blood_test" id="blood_test" class="d-none" accept=".csv,.pdf" required>
+                        <label for="blood_test">
+                            <i class="fas fa-file-upload"></i>
+                            <p class="mb-0">Dosya yüklemek için tıklayın veya sürükleyin</p>
+                            <small class="text-muted">CSV veya PDF formatında</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-chart-line me-2"></i>Analiz Et
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dosya yükleme alanı için sürükle-bırak desteği
+        const fileUpload = document.querySelector('.file-upload');
+        const fileInput = document.getElementById('blood_test');
+
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.style.borderColor = '#4CAF50';
+        });
+
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            fileInput.files = e.dataTransfer.files;
+        });
+
+        // Kronik hastalıklar ve alerjiler için "Yok" seçeneği kontrolü
+        const chronicDiseases = document.querySelectorAll('input[name="chronic_diseases"]');
+        const allergies = document.querySelectorAll('input[name="allergies"]');
+
+        function handleCheckboxGroup(checkboxes) {
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.value === 'none') {
+                        checkboxes.forEach(cb => {
+                            if (cb !== checkbox) {
+                                cb.checked = false;
+                            }
+                        });
+                    } else {
+                        const noneCheckbox = Array.from(checkboxes).find(cb => cb.value === 'none');
+                        if (noneCheckbox) {
+                            noneCheckbox.checked = false;
+                        }
+                    }
+                });
+            });
+        }
+
+        handleCheckboxGroup(chronicDiseases);
+        handleCheckboxGroup(allergies);
+    </script>
+</body>
+</html> 

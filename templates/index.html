@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kan Değerleri Analizi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #f8f9fa;
+            --secondary-color: #ffffff;
+            --accent-color: #4CAF50;
+            --text-color: #2c3e50;
+            --light-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            background: var(--primary-color);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98) !important;
+            padding: 0.5rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color) !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.2rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--accent-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .btn-analyze {
+            background: var(--accent-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-analyze:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            color: white;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 6rem 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: #666;
+            max-width: 600px;
+            line-height: 1.8;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-section {
+            padding: 8rem 0;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-right: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover .feature-icon {
+            background: rgba(76, 175, 80, 0.2);
+            transform: scale(1.1);
+        }
+
+        .feature-content h4 {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-content p {
+            color: #666;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .feature-icon {
+                margin: 0 0 1.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-heartbeat me-2"></i>
+                Kan Analiz
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Özellikler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Hakkımızda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">İletişim</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a href="{{ url_for('analysis_form') }}" class="btn btn-analyze">
+                            <i class="fas fa-chart-line me-2"></i>Analiz Et
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1 class="hero-title">
+                    Kan Değerlerinizi<br>
+                    Profesyonelce Analiz Edin
+                </h1>
+                <p class="hero-subtitle">
+                    Kan tahlil sonuçlarınızı yükleyin, detaylı analiz ve öneriler alın. Sağlığınız için en iyi kararları verin.
+                </p>
+                <a href="{{ url_for('analysis_form') }}" class="btn btn-analyze">
+                    <i class="fas fa-chart-line me-2"></i>Analize Başla
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="feature-section" id="features">
+        <div class="container">
+            <h2 class="text-center mb-5">Özelliklerimiz</h2>
+            <div class="row">
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Detaylı Analiz</h4>
+                            <p>Kan değerlerinizi profesyonel bir şekilde analiz eder, referans aralıklarına göre değerlendirir ve size özel öneriler sunar.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Anlık Uyarılar</h4>
+                            <p>Değerlerinizdeki anormallikleri hemen tespit eder, risk faktörlerini belirler ve sizi bilgilendirir.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Güvenli</h4>
+                            <p>Verileriniz güvenli bir şekilde işlenir, şifrelenir ve saklanır. KVKK uyumlu veri koruma standartları uygulanır.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Geçmiş Takibi</h4>
+                            <p>Kan değerlerinizin zaman içindeki değişimini takip eder, trend analizi yapar ve gelişimi gösterir.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>PDF Rapor</h4>
+                            <p>Analiz sonuçlarınızı detaylı PDF raporu olarak indirebilir, doktorunuzla paylaşabilirsiniz.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Mobil Uyumlu</h4>
+                            <p>Tüm cihazlarda sorunsuz çalışır, mobil uygulama deneyimi sunar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section py-5" id="about">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="mb-4">Hakkımızda</h2>
+                    <p class="lead mb-4">Kan değerlerinizi anlamak ve yorumlamak artık çok daha kolay!</p>
+                    <p>Kan Analiz platformu olarak, sağlık verilerinizi anlaşılır ve kullanışlı bir şekilde analiz etmeyi hedefliyoruz. Uzman ekibimiz ve gelişmiş algoritmalarımız sayesinde:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Kan değerlerinizi profesyonelce analiz eder</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Anormallikleri hızlıca tespit eder</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Kişiselleştirilmiş öneriler sunar</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i>Sağlık geçmişinizi takip eder</li>
+                    </ul>
+                    <p class="mt-4">Sizler için en iyi hizmeti sunmak için sürekli kendimizi geliştiriyor ve teknolojimizi güncelliyoruz.</p>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="about-stats p-4 bg-light rounded">
+                        <div class="row text-center">
+                            <div class="col-6 mb-4">
+                                <h3 class="text-success">10K+</h3>
+                                <p class="mb-0">Analiz Edilen Kan Tahlili</p>
+                            </div>
+                            <div class="col-6 mb-4">
+                                <h3 class="text-success">%99</h3>
+                                <p class="mb-0">Doğruluk Oranı</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-success">24/7</h3>
+                                <p class="mb-0">Kesintisiz Hizmet</p>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="text-success">100%</h3>
+                                <p class="mb-0">Güvenli Veri</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section py-5" id="contact">
+        <div class="container">
+            <h2 class="text-center mb-5">İletişim</h2>
+            <div class="row">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="contact-info p-4 bg-light rounded">
+                        <h3 class="mb-4">Bize Ulaşın</h3>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="contact-icon me-3">
+                                <i class="fas fa-map-marker-alt text-success"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Adres</h5>
+                                <p class="mb-0">İstanbul, Türkiye</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="contact-icon me-3">
+                                <i class="fas fa-phone text-success"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Telefon</h5>
+                                <p class="mb-0">+90 (212) XXX XX XX</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="contact-icon me-3">
+                                <i class="fas fa-envelope text-success"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">E-posta</h5>
+                                <p class="mb-0">info@kananaliz.com</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="contact-icon me-3">
+                                <i class="fas fa-clock text-success"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Çalışma Saatleri</h5>
+                                <p class="mb-0">Pazartesi - Cuma: 09:00 - 18:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="contact-form p-4 bg-white rounded shadow-sm">
+                        <h3 class="mb-4">Mesaj Gönderin</h3>
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Adınız Soyadınız</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-posta Adresiniz</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Konu</label>
+                                <input type="text" class="form-control" id="subject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Mesajınız</label>
+                                <textarea class="form-control" id="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-analyze">
+                                <i class="fas fa-paper-plane me-2"></i>Gönder
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Yeni Analiz Butonu -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('analysis_form') }}" class="btn btn-analyze">
+            <i class="fas fa-redo me-2"></i>Ana Sayfaya Dön
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                document.querySelector('.navbar').classList.add('scrolled');
+            } else {
+                document.querySelector('.navbar').classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html> 
