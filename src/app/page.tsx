@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -13,33 +21,49 @@ export default function Home() {
     });
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${formData.name} ${formData.surname}`,
+          email: formData.email,
+          subject: 'Yeni İletişim Formu Mesajı',
+          message: formData.message
+        }),
+      });
+
+      if (response.ok) {
+        alert('Mesajınız başarıyla gönderildi!');
+        setFormData({ name: '', surname: '', email: '', message: '' });
+      } else {
+        alert('Mesaj gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      }
+    } catch (error) {
+      alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <main>
       <div className="modern-background"></div>
       <div className="page-content">
-        {/* Navbar */}
-        <nav className="navbar navbar-expand-lg fixed-top">
-          <div className="container">
-            <Link href="/" className="navbar-brand">
-              <i className="fas fa-flask me-2"></i>
-              Kan Analizi
-            </Link>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav ms-auto">
-                <li className="nav-item">
-                  <Link href="/news" className="nav-link">
-                    <i className="fas fa-newspaper me-1"></i>
-                    Güncel Sağlık Haberleri
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-
         {/* Hero Section */}
         <section className="hero-section">
           <div className="container">
@@ -49,8 +73,33 @@ export default function Home() {
                 Modern teknoloji ve uzman kadromuzla kan değerlerinizi analiz ediyor, 
                 sağlığınız hakkında detaylı bilgi sunuyoruz.
               </p>
-              <Link href="/analysis" className="btn-analyze mt-4">
-                <i className="fas fa-flask"></i>
+              <Link href="/analysis" className="btn-analyze mt-4"
+                style={{
+                  background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
+                  color: 'white',
+                  padding: '12px 24px',
+                  border: 'none',
+                  borderRadius: '20px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                  fontSize: '16px',
+                  display: 'inline-block',
+                  textDecoration: 'none',
+                  textAlign: 'center'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(45deg, #2196F3, #4CAF50)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(45deg, #4CAF50, #2196F3)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+                }}
+              >
+                <i className="fas fa-flask me-3"></i>
                 Analize Başla
               </Link>
             </div>
@@ -69,28 +118,28 @@ export default function Home() {
                   </p>
                   <div className="electrolytes-grid">
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="100">
-                      <h4>Sodyum <span className="element-symbol">Na</span> <img src="/stock-vector-sodium-molecule-models-silver-chemical-formulas-scientific-element-ecology-biochemistry.jpeg" alt="Sodyum elementi" className="element-image" /></h4>
-                      <p>Sodyum, vücuttaki sıvı dengesini ve kan basıncını düzenler. Sinir ve kas fonksiyonları için kritik öneme sahiptir. Normal sodyum seviyeleri 135-145 mEq/L arasındadır.</p>
+                      <h4>Sodyum <span className="element-symbol">Na</span></h4>
+                      <p>Sıvı dengesi ve kan basıncı kontrolü için temel elektrolit. Normal değer: 135-145 mEq/L.</p>
                     </div>
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="200">
-                      <h4>Potasyum <span className="element-symbol">K</span> <img src="/download.png" alt="Potasyum elementi" className="element-image" /></h4>
-                      <p>Potasyum, hücre içi sıvılardaki en önemli elektrolitlerden biridir ve kalp ritmi, kas kasılması ve sinir iletimi üzerinde doğrudan etkiye sahiptir. Düşük potasyum seviyeleri (hipokalemi) kas güçsüzlüğü, düzensiz kalp atışı ve metabolik asidoza sebep olabilirken, yüksek potasyum seviyeleri (hiperkalemi) ise kalp durmasına kadar ilerleyebilecek ciddi komplikasyonlara neden olabilir.</p>
+                      <h4>Potasyum <span className="element-symbol">K</span></h4>
+                      <p>Kalp ritmi ve kas fonksiyonları için hayati. Düşüklüğü kas güçsüzlüğüne, yüksekliği kalp sorunlarına neden olabilir.</p>
                     </div>
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="300">
-                      <h4>Kalsiyum <span className="element-symbol">Ca</span> <img src="/download2.png" alt="Kalsiyum elementi" className="element-image" /></h4>
-                      <p>Kalsiyum, kemik ve diş sağlığı için en önemli minerallerden biridir. Bunun yanı sıra kas kasılması, sinir iletimi, kan pıhtılaşması ve hormonal düzenlemelerde önemli bir rol oynar. Düşük kalsiyum seviyeleri (hipokalsemi) kas krampları ve nörolojik sorunlara yol açabilirken, yüksek seviyeleri (hiperkalsemi) böbrek taşları ve kalp ritim bozuklukları gibi ciddi sağlık sorunlarına neden olabilir.</p>
+                      <h4>Kalsiyum <span className="element-symbol">Ca</span></h4>
+                      <p>Kemik sağlığı, kas kasılması ve sinir iletimi için gerekli. Dengesi hormonal sistemle yakından ilişkili.</p>
                     </div>
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="400">
                       <h4>Magnezyum <span className="element-symbol">Mg</span></h4>
-                      <p>Magnezyum, enzim fonksiyonları, enerji üretimi ve kas- sinir sisteminin düzenlenmesi için gereklidir. Eksikliği, kas krampları, yorgunluk ve sinir sistemi bozukluklarına sebep olabilir. Aşırı yüksek magnezyum seviyeleri ise tansiyon düşüklüğü, solunum depresyonu ve kalp durmasına yol açabilir.</p>
+                      <p>Enerji üretimi ve sinir-kas sistemi için önemli. Eksikliği yorgunluk ve kas kramplarına yol açar.</p>
                     </div>
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="500">
                       <h4>Klor <span className="element-symbol">Cl</span></h4>
-                      <p>Klor, vücut sıvılarının asit-baz dengesini koruyan ve mide asidinin üretiminde görev alan önemli bir elektrolittir. Eksikliği, mide sorunları ve asit-baz dengesizliğine yol açabilir. Fazla klor alımı ise yüksek tansiyon ve sıvı dengesizliği gibi problemlere neden olabilir.</p>
+                      <p>Asit-baz dengesi ve mide asidi üretiminde kritik rol oynar. Vücut sıvılarının dengesini sağlar.</p>
                     </div>
                     <div className="electrolyte-item" data-aos="fade-up" data-aos-delay="600">
                       <h4>Fosfat <span className="element-symbol">P</span></h4>
-                      <p>Fosfat, enerji üretimi, DNA ve RNA sentezi gibi hücresel süreçlerde temel bir bileşendir. Kas ve sinir fonksiyonlarını destekler ve kemik sağlığı için kalsiyum ile birlikte çalışır. Düşük fosfat seviyeleri yorgunluk, kas zayıflığı ve kemik deformasyonlarına neden olabilirken, yüksek seviyeler böbrek hastalıkları ile ilişkilendirilebilir.</p>
+                      <p>Enerji metabolizması ve kemik yapısı için temel mineral. DNA sentezi ve hücre yenilenmesinde görevli.</p>
                     </div>
                   </div>
                   <p className="section-text mt-4">
@@ -147,14 +196,70 @@ export default function Home() {
         {/* About Section */}
         <section id="about" className="about-section">
           <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-8 text-center" data-aos="fade-up">
+            <div className="row">
+              <div className="col-lg-6 text-start" data-aos="fade-up">
                 <h2 className="section-title">Hakkımızda</h2>
-                <p className="section-text">
-                  KanAnaliz olarak, modern tıp teknolojilerini kullanarak kan değerlerinizi 
-                  detaylı şekilde analiz ediyoruz. Uzman kadromuz ve son teknoloji 
-                  ekipmanlarımızla size en doğru sonuçları sunuyoruz.
+                <p className="section-text" style={{ color: '#1a1a1a', fontWeight: '500' }}>
+                  Kan değerlerinizi anlamak ve yorumlamak artık çok daha kolay!<br />
+                  Kan Analiz platformu olarak, sağlık verilerinizi anlaşılır ve kullanışlı bir şekilde analiz etmeyi hedefliyoruz. Uzman ekibimiz ve gelişmiş algoritmamız sayesinde:
                 </p>
+                <div className="feature-list">
+                  <div className="feature-item">
+                    <div className="feature-icon">
+                      <i className="fas fa-check"></i>
+                    </div>
+                    <p style={{ color: '#1a1a1a', fontWeight: '500' }}>Kan değerlerinizi profesyonelce analiz eder.</p>
+                  </div>
+                  <div className="feature-item">
+                    <div className="feature-icon">
+                      <i className="fas fa-check"></i>
+                    </div>
+                    <p style={{ color: '#1a1a1a', fontWeight: '500' }}>Anormallikleri hızlıca tespit eder.</p>
+                  </div>
+                  <div className="feature-item">
+                    <div className="feature-icon">
+                      <i className="fas fa-check"></i>
+                    </div>
+                    <p style={{ color: '#1a1a1a', fontWeight: '500' }}>Kişiselleştirilmiş öneriler sunar.</p>
+                  </div>
+                  <div className="feature-item">
+                    <div className="feature-icon">
+                      <i className="fas fa-check"></i>
+                    </div>
+                    <p style={{ color: '#1a1a1a', fontWeight: '500' }}>Sağlık geçmişinizi takip eder.</p>
+                  </div>
+                </div>
+                <p className="section-text mt-4" style={{ color: '#1a1a1a', fontWeight: '500' }}>
+                  Sizler için en iyi hizmeti sunmak için sürekli kendimizi geliştiriyor ve teknolojilerimizi güncelliyoruz.
+                </p>
+              </div>
+              <div className="col-lg-6 d-flex align-items-center" data-aos="fade-up">
+                <div className="row w-100">
+                  <div className="col-6 mb-4">
+                    <div className="stat-item text-center">
+                      <h3 className="stat-number" style={{ color: 'var(--accent-color)', fontSize: '2.5rem', fontWeight: '700' }}>10K+</h3>
+                      <p className="stat-label" style={{ color: '#1a1a1a', fontSize: '1.1rem' }}>Analiz Edilen Kan Tahlili</p>
+                    </div>
+                  </div>
+                  <div className="col-6 mb-4">
+                    <div className="stat-item text-center">
+                      <h3 className="stat-number" style={{ color: 'var(--accent-color)', fontSize: '2.5rem', fontWeight: '700' }}>%99</h3>
+                      <p className="stat-label" style={{ color: '#1a1a1a', fontSize: '1.1rem' }}>Doğruluk Oranı</p>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="stat-item text-center">
+                      <h3 className="stat-number" style={{ color: 'var(--accent-color)', fontSize: '2.5rem', fontWeight: '700' }}>24/7</h3>
+                      <p className="stat-label" style={{ color: '#1a1a1a', fontSize: '1.1rem' }}>Kesintisiz Hizmet</p>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="stat-item text-center">
+                      <h3 className="stat-number" style={{ color: 'var(--accent-color)', fontSize: '2.5rem', fontWeight: '700' }}>%100</h3>
+                      <p className="stat-label" style={{ color: '#1a1a1a', fontSize: '1.1rem' }}>Gerçek Veri</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -163,33 +268,126 @@ export default function Home() {
         {/* Contact Section */}
         <section id="contact" className="contact-section">
           <div className="container">
-            <h2 className="section-title text-center mb-5" data-aos="fade-up">İletişim</h2>
             <div className="row">
-              <div className="col-md-4" data-aos="fade-up" data-aos-delay="100">
+              <div className="col-lg-6" data-aos="fade-up">
+                <h2 className="contact-title">Bize Ulaşın</h2>
                 <div className="contact-info">
-                  <i className="fas fa-map-marker-alt mb-3"></i>
-                  <h5>Adres</h5>
-                  <p>Üniversite, 23200 Elazığ Merkez/Elazığ</p>
+                  <div className="contact-item">
+                    <i className="fas fa-map-marker-alt"></i>
+                    <div>
+                      <h5>Adres</h5>
+                      <p>İstanbul, Türkiye</p>
+                    </div>
+                  </div>
+                  <div className="contact-item">
+                    <i className="fas fa-phone"></i>
+                    <div>
+                      <h5>Telefon</h5>
+                      <p>+90 (212) 123 45 67</p>
+                    </div>
+                  </div>
+                  <div className="contact-item">
+                    <i className="fas fa-envelope"></i>
+                    <div>
+                      <h5>E-posta</h5>
+                      <p>info@kananalizi.com</p>
+                    </div>
+                  </div>
+                  <div className="contact-item">
+                    <i className="fas fa-clock"></i>
+                    <div>
+                      <h5>Çalışma Saatleri</h5>
+                      <p>Pazartesi - Cuma: 09:00 - 18:00<br />Cumartesi: 10:00 - 14:00</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div className="contact-info">
-                  <i className="fas fa-phone mb-3"></i>
-                  <h5>Telefon</h5>
-                  <p>+90 (212) 123 45 67<br />+90 (532) 987 65 43</p>
-                </div>
-              </div>
-              <div className="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div className="contact-info">
-                  <i className="fas fa-envelope mb-3"></i>
-                  <h5>E-posta</h5>
-                  <p>info@kananaliz.com<br />destek@kananaliz.com</p>
+              <div className="col-lg-6" data-aos="fade-up">
+                <div className="contact-form">
+                  <h3>İletişim Formu</h3>
+                  <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Adınız"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Soyadınız"
+                        name="surname"
+                        value={formData.surname}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <input
+                        type="email"
+                        className="form-control"
+                        placeholder="E-posta Adresiniz"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <textarea
+                        className="form-control"
+                        placeholder="Mesajınız"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        rows={5}
+                      ></textarea>
+                    </div>
+                    <button type="submit" className="btn-send" disabled={isSubmitting}
+                      style={{
+                        background: 'linear-gradient(45deg, #4CAF50, #2196F3)',
+                        color: 'white',
+                        padding: '8px 16px',
+                        border: 'none',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                        fontSize: '14px',
+                        width: '120px'
+                      }}
+                      onMouseOver={(e) => {
+                        if (!isSubmitting) {
+                          e.currentTarget.style.background = 'linear-gradient(45deg, #2196F3, #4CAF50)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (!isSubmitting) {
+                          e.currentTarget.style.background = 'linear-gradient(45deg, #4CAF50, #2196F3)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+                        }
+                      }}
+                    >
+                      <i className="fas fa-paper-plane me-2"></i>
+                      {isSubmitting ? 'Gönderiliyor...' : 'Gönder'}
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
         </section>
-        </div>
-      </main>
+      </div>
+    </main>
   );
 }
