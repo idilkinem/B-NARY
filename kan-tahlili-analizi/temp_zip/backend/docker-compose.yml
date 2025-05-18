@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_cont_2
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5434:5432"  # Ana makinedeki 5434 portunu container'ın 5432 portuna bağlıyoruz
+    volumes:
+      - postgres_cont_2_data:/var/lib/postgresql/data
+      - ./src/db/init.sql:/docker-entrypoint-initdb.d/init.sql  # Başlangıç SQL dosyamız
+    networks:
+      - postgres_cont_2_network
+
+networks:
+  postgres_cont_2_network:
+    driver: bridge
+
+volumes:
+  postgres_cont_2_data: 

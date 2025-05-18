@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const db = require('../config/db');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -22,6 +23,12 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Geçerli bir e-posta adresi giriniz.' });
     }
 
+    // Veritabanına kaydet
+    const dbResult = await db.query(
+      'INSERT INTO subscribers (email) VALUES ($1) RETURNING id',
+      [email]
+    );
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
@@ -34,14 +41,18 @@ router.post('/', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-
-    // TODO: E-postayı veritabanına kaydet
-    // Örnek: await db.insert({ email, subscribedAt: new Date() }).into('subscribers');
-    
-    res.json({ message: 'Abone olduğunuz için teşekkür ederiz!' });
+    res.json({ 
+      message: 'Abone olduğunuz için teşekkür ederiz!',
+      subscriberId: dbResult.rows[0].id 
+    });
   } catch (error) {
-    console.error('Abonelik hatası:', error);
-    res.status(500).json({ error: 'Bir hata oluştu. Lütfen tekrar deneyin.' });
+    // Eğer e-posta zaten kayıtlıysa
+    if (error.code === '23505') { // PostgreSQL unique violation error code
+      return res.status(400).json({ error: 'Bu e-posta adresi zaten kayıtlı.' });
+    }
+    
+    console.error('Hata:', error);
+    res.status(500).json({ error: 'İşlem sırasında bir hata oluştu.' });
   }
 });
 

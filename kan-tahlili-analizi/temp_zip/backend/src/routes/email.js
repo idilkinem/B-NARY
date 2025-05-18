@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const db = require('../config/db');
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
@@ -15,6 +16,12 @@ const transporter = nodemailer.createTransport({
 router.post('/', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
+
+    // Veritabanına kaydet
+    const dbResult = await db.query(
+      'INSERT INTO contact_messages (name, email, subject, message) VALUES ($1, $2, $3, $4) RETURNING id',
+      [name, email, subject, message]
+    );
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -31,10 +38,10 @@ router.post('/', async (req, res) => {
     };
 
     await transporter.sendMail(mailOptions);
-    res.json({ success: true });
+    res.json({ success: true, messageId: dbResult.rows[0].id });
   } catch (error) {
-    console.error('E-posta gönderme hatası:', error);
-    res.status(500).json({ error: 'E-posta gönderilemedi' });
+    console.error('Hata:', error);
+    res.status(500).json({ error: 'İşlem sırasında bir hata oluştu' });
   }
 });
 
