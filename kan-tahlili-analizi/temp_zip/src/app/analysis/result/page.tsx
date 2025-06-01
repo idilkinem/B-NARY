@@ -14,62 +14,23 @@ export default function AnalysisResult() {
   };
 
   useEffect(() => {
-    // URL'den parametreleri al
-    const params = {
-      firstName: searchParams.get('firstName'),
-      lastName: searchParams.get('lastName'),
-      tcNo: searchParams.get('tcNo'),
-      birthDate: searchParams.get('birthDate'),
-      height: searchParams.get('height'),
-      weight: searchParams.get('weight'),
-      bloodType: searchParams.get('bloodType'),
-      gender: searchParams.get('gender'),
-      chronicDiseases: searchParams.get('chronicDiseases')?.split(','),
-      allergies: searchParams.get('allergies')?.split(','),
-      medications: searchParams.get('medications'),
-      recentIllnesses: searchParams.get('recentIllnesses')
-    };
+    // sessionStorage'dan analiz sonucunu al
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('analysisResult');
+      if (stored) {
+        setAnalysisResults(JSON.parse(stored));
+      }
+    }
+    setIsLoading(false);
+  }, []);
 
-    // Burada backend'den analiz sonuçlarını alacağız
-    // Şimdilik örnek veri kullanıyoruz
-    setTimeout(() => {
-      setAnalysisResults({
-        patientInfo: params,
-        testResults: [
-          { test: 'Hemoglobin', value: '14.2', normalRange: '12-16', status: 'normal' },
-          { test: 'Lökosit', value: '11.5', normalRange: '4-10', status: 'warning' },
-          { test: 'Trombosit', value: '250', normalRange: '150-450', status: 'normal' },
-          { test: 'Glukoz', value: '110', normalRange: '70-100', status: 'danger' },
-          { test: 'Kolesterol', value: '220', normalRange: '0-200', status: 'warning' },
-          { test: 'HDL', value: '45', normalRange: '40-60', status: 'normal' },
-          { test: 'LDL', value: '130', normalRange: '0-100', status: 'danger' },
-          { test: 'Triglisert', value: '150', normalRange: '0-150', status: 'normal' }
-        ],
-        aiComment: 'Kan değerlerinizde bazı anormallikler tespit edildi. Lökosit seviyeniz yüksek ve glukoz değeriniz normal aralığın üzerinde. Bu durum enfeksiyon veya diyabet riski gösterebilir. Ayrıca kolesterol ve LDL değerleriniz yüksek seviyede. Bu durum kalp-damar hastalıkları riskini artırabilir. Doktorunuza başvurmanızı öneririz.',
-        recommendations: [
-          'Doktor kontrolüne başvurun',
-          'Şekerli gıdalardan kaçının',
-          'Düzenli egzersiz yapın',
-          'Bol su tüketin',
-          'Yağlı gıdaları azaltın',
-          'Lifli gıdalar tüketin',
-          'Stresten uzak durun',
-          'Düzenli uyku uyuyun'
-        ]
-      });
-      setIsLoading(false);
-    }, 2000);
-  }, [searchParams]);
-
-  if (isLoading) {
+  if (!isLoading && !analysisResults) {
     return (
       <div className="analysis-page">
         <div className="container py-5">
           <div className="analysis-form-container text-center">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Yükleniyor...</span>
-            </div>
-            <p className="mt-3">Analiz sonuçları yükleniyor...</p>
+            <div className="alert alert-danger">Analiz sonucu bulunamadı. Lütfen tekrar deneyin.</div>
+            <Link href="/analysis" className="btn btn-success mt-3">Geri Dön</Link>
           </div>
         </div>
       </div>
