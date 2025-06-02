@@ -1,0 +1,34 @@
+.github/workflows/sonarqube.yml
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  sonarqube:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npx sonar-scanner ^
+            -Dsonar.projectKey=idilkinem_B-NARY ^
+            -Dsonar.sources=. ^
+            -Dsonar.host.url=http://localhost:3000 ^
+            -Dsonar.login=%SONAR_TOKEN%
