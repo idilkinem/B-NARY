@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -29,13 +29,30 @@ export default function Analysis() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const router = useRouter();
 
+  const [otherChronicText, setOtherChronicText] = useState('');
+  const [otherAllergyText, setOtherAllergyText] = useState('');
+
+  const [fileSuccess, setFileSuccess] = useState(false);
+
+  useEffect(() => {
+    validateForm();
+  }, []);
+
+  useEffect(() => {
+    const { medications, recentIllnesses, ...requiredFields } = formData;
+    validateForm();
+  }, [formData.firstName, formData.lastName, formData.tcNo, formData.birthDate,
+      formData.height, formData.weight, formData.bloodType, formData.gender,
+      formData.chronicDiseases, formData.allergies, selectedFile]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    validateForm();
+    if (name === 'medications' || name === 'recentIllnesses') {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+      validateForm();
+    }
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,8 +86,10 @@ export default function Analysis() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
+      setFileSuccess(true);
     } else {
       setSelectedFile(null);
+      setFileSuccess(false);
     }
     validateForm();
   };
@@ -91,7 +110,7 @@ export default function Analysis() {
       formData.bloodType !== '' &&
       formData.gender !== '';
 
-    // Sağlık bilgilerinin kontrolü
+    // Sağlık bilgilerinin kontrolü (sadece kronik hastalıklar ve alerjiler)
     const isHealthInfoValid = 
       (formData.chronicDiseases.length > 0 || formData.chronicDiseases.includes('yok')) &&
       (formData.allergies.length > 0 || formData.allergies.includes('yok'));
@@ -99,13 +118,18 @@ export default function Analysis() {
     // Dosya kontrolü
     const isFileValid = selectedFile !== null;
 
-    // Tüm kontrollerin birleştirilmesi
-    const isValid = 
-      isPersonalInfoValid &&
-      isPhysicalInfoValid &&
-      isHealthInfoValid &&
-      isFileValid;
-    
+    // Sadece zorunlu alanların kontrolü
+    const isValid = isPersonalInfoValid && isPhysicalInfoValid && isHealthInfoValid && isFileValid;
+
+    // Debug için konsola yazdır
+    console.log('Form Validation:', {
+      isPersonalInfoValid,
+      isPhysicalInfoValid,
+      isHealthInfoValid,
+      isFileValid,
+      isValid
+    });
+
     setIsFormValid(isValid);
   };
 
@@ -224,9 +248,17 @@ export default function Analysis() {
                             id="tcNo"
                             name="tcNo"
                             value={formData.tcNo}
-                            onChange={handleInputChange}
+                            onChange={e => {
+                              // Sadece rakam girilsin
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              if (value.length <= 11) {
+                                setFormData(prev => ({ ...prev, tcNo: value }));
+                                validateForm();
+                              }
+                            }}
                             required
-                            pattern="[0-9]{11}"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             maxLength={11}
                           />
                         </div>
@@ -313,7 +345,6 @@ export default function Analysis() {
                             <option value="">Seçiniz</option>
                             <option value="male">Erkek</option>
                             <option value="female">Kadın</option>
-                            <option value="other">Diğer</option>
                           </select>
                         </div>
                       </div>
@@ -392,6 +423,42 @@ export default function Analysis() {
                               <input
                                 type="checkbox"
                                 className="form-check-input"
+                                id="thyroid"
+                                name="chronicDiseases"
+                                value="tiroid"
+                                checked={formData.chronicDiseases.includes('tiroid')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="thyroid">Tiroid</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="arthritis"
+                                name="chronicDiseases"
+                                value="artrit"
+                                checked={formData.chronicDiseases.includes('artrit')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="arthritis">Artrit</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="migraine"
+                                name="chronicDiseases"
+                                value="migren"
+                                checked={formData.chronicDiseases.includes('migren')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="migraine">Migren</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
                                 id="noChronic"
                                 name="chronicDiseases"
                                 value="yok"
@@ -400,6 +467,29 @@ export default function Analysis() {
                               />
                               <label className="form-check-label" htmlFor="noChronic">Yok</label>
                             </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="otherChronic"
+                                name="chronicDiseases"
+                                value="diger"
+                                checked={formData.chronicDiseases.includes('diger')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="otherChronic">Diğer</label>
+                            </div>
+                            {/* Diğer kutucuğu seçiliyse input göster */}
+                            {formData.chronicDiseases.includes('diger') && (
+                              <input
+                                type="text"
+                                className="form-control mt-2"
+                                placeholder="Lütfen belirtiniz"
+                                value={otherChronicText}
+                                onChange={e => setOtherChronicText(e.target.value)}
+                                style={{fontSize: '1rem'}}
+                              />
+                            )}
                           </div>
                         </div>
 
@@ -459,6 +549,66 @@ export default function Analysis() {
                               <input
                                 type="checkbox"
                                 className="form-check-input"
+                                id="animalAllergy"
+                                name="allergies"
+                                value="hayvan-alerjisi"
+                                checked={formData.allergies.includes('hayvan-alerjisi')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="animalAllergy">Hayvan Alerjisi</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="moldAllergy"
+                                name="allergies"
+                                value="kuf-alerjisi"
+                                checked={formData.allergies.includes('kuf-alerjisi')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="moldAllergy">Küf Alerjisi</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="latexAllergy"
+                                name="allergies"
+                                value="lateks-alerjisi"
+                                checked={formData.allergies.includes('lateks-alerjisi')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="latexAllergy">Lateks Alerjisi</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="insectAllergy"
+                                name="allergies"
+                                value="bocek-alerjisi"
+                                checked={formData.allergies.includes('bocek-alerjisi')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="insectAllergy">Böcek Alerjisi</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="metalAllergy"
+                                name="allergies"
+                                value="metal-alerjisi"
+                                checked={formData.allergies.includes('metal-alerjisi')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="metalAllergy">Metal Alerjisi</label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
                                 id="noAllergy"
                                 name="allergies"
                                 value="yok"
@@ -467,57 +617,105 @@ export default function Analysis() {
                               />
                               <label className="form-check-label" htmlFor="noAllergy">Yok</label>
                             </div>
+                            <div className="form-check">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                id="otherAllergy"
+                                name="allergies"
+                                value="diger"
+                                checked={formData.allergies.includes('diger')}
+                                onChange={handleCheckboxChange}
+                              />
+                              <label className="form-check-label" htmlFor="otherAllergy">Diğer</label>
+                            </div>
+                            {/* Diğer kutucuğu seçiliyse input göster */}
+                            {formData.allergies.includes('diger') && (
+                              <input
+                                type="text"
+                                className="form-control mt-2"
+                                placeholder="Lütfen belirtiniz"
+                                value={otherAllergyText}
+                                onChange={e => setOtherAllergyText(e.target.value)}
+                                style={{fontSize: '1rem'}}
+                              />
+                            )}
                           </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Düzenli Kullanılan İlaçlar ve Son 6 Ayda Geçirilen Hastalıklar */}
-                    <div className="form-row">
-                      {/* Düzenli Kullanılan İlaçlar */}
-                      <div className="form-group">
-                        <h4 className="subsection-title">Düzenli Kullanılan İlaçlar</h4>
-                        <textarea
-                          className="form-control"
-                          id="medications"
-                          name="medications"
-                          value={formData.medications}
-                          onChange={handleInputChange}
-                          placeholder="Varsa yazınız"
-                          rows={3}
-                        />
+                    <div className="health-info-section-single">
+                      <div>
+                        <div className="subsection-title">Düzenli Kullanılan İlaçlar</div>
+                        <div className="health-info-box">
+                          <textarea
+                            className="form-control"
+                            id="medications"
+                            name="medications"
+                            value={formData.medications}
+                            onChange={handleInputChange}
+                            placeholder="Varsa yazınız"
+                            rows={3}
+                          />
+                        </div>
                       </div>
-
-                      {/* Son 6 Ayda Geçirilen Önemli Hastalıklar */}
-                      <div className="form-group">
-                        <h4 className="subsection-title">Son 6 Ayda Geçirilen Önemli Hastalıklar</h4>
-                        <textarea
-                          className="form-control"
-                          id="recentIllnesses"
-                          name="recentIllnesses"
-                          value={formData.recentIllnesses}
-                          onChange={handleInputChange}
-                          placeholder="Varsa yazınız"
-                          rows={3}
-                        />
+                      <div>
+                        <div className="subsection-title">Son 6 Ayda Geçirilen Önemli Hastalıklar</div>
+                        <div className="health-info-box">
+                          <textarea
+                            className="form-control"
+                            id="recentIllnesses"
+                            name="recentIllnesses"
+                            value={formData.recentIllnesses}
+                            onChange={handleInputChange}
+                            placeholder="Varsa yazınız"
+                            rows={3}
+                          />
+                        </div>
                       </div>
                     </div>
 
                     {/* Kan Tahlili Sonuçları */}
                     <div className="blood-test-section">
                       <h4 className="section-subtitle">Kan Tahlili Sonuçları</h4>
-                      <div className="file-upload-container">
+                      <div className="file-upload-container excel-upload-modern" onClick={() => {
+                        const input = document.getElementById('bloodTestResults') as HTMLInputElement | null;
+                        if (input) input.click();
+                      }} style={{cursor: 'pointer'}}>
+                        <div className="excel-icon-circle">
+                          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <defs>
+                              <linearGradient id="excelGradient" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#4CAF50"/>
+                                <stop offset="1" stopColor="#2196F3"/>
+                              </linearGradient>
+                            </defs>
+                            <circle cx="24" cy="24" r="22" fill="url(#excelGradient)" />
+                            <rect x="14" y="14" width="20" height="20" rx="4" fill="#fff"/>
+                            <text x="24" y="30" textAnchor="middle" fontSize="16" fontWeight="bold" fill="#4CAF50">X</text>
+                          </svg>
+                        </div>
+                        <div className="excel-upload-title">Excel Dosyanızı Seçin veya Sürükleyin</div>
+                        <div className="excel-upload-desc">Sadece .xlsx veya .xls formatında dosya yükleyebilirsiniz</div>
                         <input
                           type="file"
                           className="form-control"
                           id="bloodTestResults"
-                          accept=".pdf,.jpg,.png"
+                          accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                           onChange={handleFileChange}
                           required
+                          style={{display: 'none'}}
                         />
-                        <small className="text-muted">PDF, JPG veya PNG formatında yükleyiniz</small>
                       </div>
                     </div>
+
+                    {fileSuccess && (
+                      <div style={{color:'#219653', background:'#eafaf1', borderRadius:'8px', padding:'10px 0', marginTop:'10px', fontWeight:600, fontSize:'1.05rem', textAlign:'center'}}>
+                        Dosya başarıyla yüklendi.
+                      </div>
+                    )}
 
                     <div className="text-center mt-4">
                       <button 

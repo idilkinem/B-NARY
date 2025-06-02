@@ -78,15 +78,12 @@ export default function AnalysisResult() {
 
   return (
     <div className="analysis-page">
-      <div className="container py-5">
+      <div className="container py-5 position-relative">
+        <Link href="/analysis" className="back-button result-back-button">
+          <i className="fas fa-arrow-left me-2"></i>
+          Geri Dön
+        </Link>
         <div className="analysis-form-container">
-          <div className="d-flex justify-content-start mb-4">
-            <Link href="/analysis" className="back-button">
-              <i className="fas fa-arrow-left me-2"></i>
-              Geri Dön
-            </Link>
-          </div>
-          
           <div className="text-center mb-5">
             <h1 className="section-title">Analiz Sonuçları</h1>
           </div>
@@ -94,50 +91,128 @@ export default function AnalysisResult() {
           {/* Hasta Bilgileri */}
           <div className="form-section">
             <h3 className="section-subtitle">Hasta Bilgileri</h3>
-            <div className="row">
-              <div className="col-md-6">
-                <p><strong>Ad Soyad:</strong> {analysisResults.patientInfo.firstName} {analysisResults.patientInfo.lastName}</p>
-                <p><strong>TC Kimlik No:</strong> {analysisResults.patientInfo.tcNo}</p>
-                <p><strong>Doğum Tarihi:</strong> {analysisResults.patientInfo.birthDate}</p>
-                <p><strong>Cinsiyet:</strong> {analysisResults.patientInfo.gender === 'male' ? 'Erkek' : 'Kadın'}</p>
+            
+            {/* Kişisel Bilgiler */}
+            <div className="patient-info-section">
+              <div className="patient-info-group">
+                <h4 className="patient-info-group-title">Kişisel Bilgiler</h4>
+                <div className="patient-info-grid">
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Ad Soyad</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.firstName} {analysisResults.patientInfo.lastName}</div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">TC Kimlik No</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.tcNo}</div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Doğum Tarihi</div>
+                    <div className="patient-info-value">{new Date(analysisResults.patientInfo.birthDate).toLocaleDateString('tr-TR')}</div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Cinsiyet</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.gender === 'male' ? 'Erkek' : 'Kadın'}</div>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6">
-                <p><strong>Boy:</strong> {analysisResults.patientInfo.height} cm</p>
-                <p><strong>Kilo:</strong> {analysisResults.patientInfo.weight} kg</p>
-                <p><strong>Kan Grubu:</strong> {analysisResults.patientInfo.bloodType}</p>
-                <p><strong>BMI:</strong> {((Number(analysisResults.patientInfo.weight) / Math.pow(Number(analysisResults.patientInfo.height) / 100, 2)).toFixed(1))}</p>
-              </div>
-            </div>
 
-            {/* Kronik Hastalıklar ve Alerjiler */}
-            <div className="row mt-4">
-              <div className="col-md-6">
-                <p><strong>Kronik Hastalıklar:</strong></p>
-                <ul>
-                  {analysisResults.patientInfo.chronicDiseases?.map((disease: string, index: number) => (
-                    <li key={index}>{disease}</li>
-                  ))}
-                </ul>
+              {/* Fiziksel Bilgiler */}
+              <div className="patient-info-group">
+                <h4 className="patient-info-group-title">Fiziksel Bilgiler</h4>
+                <div className="patient-info-grid">
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Boy</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.height} cm</div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Kilo</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.weight} kg</div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Vücut Kitle İndeksi (BMI)</div>
+                    <div className="patient-info-value">
+                      {((Number(analysisResults.patientInfo.weight) / Math.pow(Number(analysisResults.patientInfo.height) / 100, 2)).toFixed(1))} kg/m²
+                    </div>
+                  </div>
+                  <div className="patient-info-item">
+                    <div className="patient-info-label">Kan Grubu</div>
+                    <div className="patient-info-value">{analysisResults.patientInfo.bloodType}</div>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6">
-                <p><strong>Alerjiler:</strong></p>
-                <ul>
-                  {analysisResults.patientInfo.allergies?.map((allergy: string, index: number) => (
-                    <li key={index}>{allergy}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
 
-            {/* Düzenli Kullanılan İlaçlar ve Son Hastalıklar */}
-            <div className="row mt-4">
-              <div className="col-md-6">
-                <p><strong>Düzenli Kullanılan İlaçlar:</strong></p>
-                <p>{analysisResults.patientInfo.medications || 'Belirtilmemiş'}</p>
-              </div>
-              <div className="col-md-6">
-                <p><strong>Son 6 Ayda Geçirilen Önemli Hastalıklar:</strong></p>
-                <p>{analysisResults.patientInfo.recentIllnesses || 'Belirtilmemiş'}</p>
+              {/* Sağlık Bilgileri */}
+              <div className="patient-info-group">
+                <h4 className="patient-info-group-title">Sağlık Bilgileri</h4>
+                <div className="patient-info-grid">
+                  {Array.isArray(analysisResults.patientInfo.chronicDiseases) && 
+                   analysisResults.patientInfo.chronicDiseases.length > 0 && 
+                   analysisResults.patientInfo.chronicDiseases[0] !== 'yok' && (
+                    <div className="patient-info-item full-width">
+                      <div className="patient-info-label">Kronik Hastalıklar</div>
+                      <div className="patient-info-list-container">
+                        {analysisResults.patientInfo.chronicDiseases.map((disease: string, index: number) => (
+                          <div key={index} className="patient-info-list-item">
+                            <i className="fas fa-circle-dot me-2"></i>
+                            {disease}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {Array.isArray(analysisResults.patientInfo.allergies) && 
+                   analysisResults.patientInfo.allergies.length > 0 && 
+                   analysisResults.patientInfo.allergies[0] !== 'yok' && (
+                    <div className="patient-info-item full-width">
+                      <div className="patient-info-label">Alerjiler</div>
+                      <div className="patient-info-list-container">
+                        {analysisResults.patientInfo.allergies.map((allergy: string, index: number) => (
+                          <div key={index} className="patient-info-list-item">
+                            <i className="fas fa-circle-dot me-2"></i>
+                            {allergy}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="patient-info-item full-width">
+                    <div className="patient-info-label">Düzenli Kullanılan İlaçlar</div>
+                    <div className="patient-info-value">
+                      {analysisResults.patientInfo.medications ? (
+                        <div className="patient-info-list-container">
+                          {analysisResults.patientInfo.medications.split('\n').map((med: string, index: number) => (
+                            <div key={index} className="patient-info-list-item">
+                              <i className="fas fa-pills me-2"></i>
+                              {med}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-muted">Belirtilmemiş</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="patient-info-item full-width">
+                    <div className="patient-info-label">Son 6 Ayda Geçirilen Önemli Hastalıklar</div>
+                    <div className="patient-info-value">
+                      {analysisResults.patientInfo.recentIllnesses ? (
+                        <div className="patient-info-list-container">
+                          {analysisResults.patientInfo.recentIllnesses.split('\n').map((illness: string, index: number) => (
+                            <div key={index} className="patient-info-list-item">
+                              <i className="fas fa-notes-medical me-2"></i>
+                              {illness}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-muted">Belirtilmemiş</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

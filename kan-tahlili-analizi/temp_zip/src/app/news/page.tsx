@@ -4,11 +4,15 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { NewsService } from '../services/NewsService';
 
 export default function NewsPage() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState('');
 
   useEffect(() => {
     AOS.init({
@@ -17,47 +21,27 @@ export default function NewsPage() {
     });
   }, []);
 
-  // Örnek haber verileri
-  const newsItems = [
-    {
-      id: 1,
-      category: 'general',
-      title: 'Düzenli Kan Tahlili Yaptırmanın Önemi',
-      summary: 'Uzmanlar, yılda en az bir kez kan tahlili yaptırmanın sağlık açısından önemini vurguluyor.',
-      image: 'https://placehold.co/600x400',
-      date: '2024-03-15'
-    },
-    {
-      id: 2,
-      category: 'research',
-      title: 'Yeni Kan Testi Teknolojisi Geliştirildi',
-      summary: 'Bilim insanları, daha hızlı ve doğru sonuçlar veren yeni bir kan testi teknolojisi geliştirdi.',
-      image: 'https://placehold.co/600x400',
-      date: '2024-03-14'
-    },
-    {
-      id: 3,
-      category: 'technology',
-      title: 'Yapay Zeka Destekli Kan Analizi',
-      summary: 'Yapay zeka teknolojisi, kan tahlili sonuçlarının yorumlanmasında devrim yaratıyor.',
-      image: 'https://placehold.co/600x400',
-      date: '2024-03-13'
-    },
-    {
-      id: 4,
-      category: 'nutrition',
-      title: 'Kan Değerlerinizi İyileştiren Besinler',
-      summary: 'Beslenme uzmanları, kan değerlerini dengede tutmak için tüketilmesi gereken besinleri açıkladı.',
-      image: 'https://placehold.co/600x400',
-      date: '2024-03-12'
-    }
-  ];
+  useEffect(() => {
+    const fetchNews = async () => {
+      setNewsLoading(true);
+      setNewsError('');
+      try {
+        const service = new NewsService();
+        const articles = await service.getHealthNews(10, 1);
+        setNewsItems(articles);
+      } catch (err) {
+        setNewsError('Haberler alınırken bir hata oluştu.');
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+    fetchNews();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
-
     try {
       const response = await fetch('/api/subscribe', {
         method: 'POST',
@@ -66,9 +50,7 @@ export default function NewsPage() {
         },
         body: JSON.stringify({ email }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setMessage('Abone olduğunuz için teşekkür ederiz!');
         setEmail('');
@@ -84,71 +66,237 @@ export default function NewsPage() {
 
   return (
     <main className="min-h-screen relative">
-      {/* Arka plan resmi */}
-      <div 
-        className="fixed inset-0 z-0" 
-        style={{
-          backgroundImage: 'url("/sağlıkhaber.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.4
-        }}
-      />
+      {/* Animasyonlu Arka Plan */}
+      <div className="animated-bg fixed inset-0 -z-10">
+        <div className="animated-bg-dot dot1"></div>
+        <div className="animated-bg-dot dot2"></div>
+        <div className="animated-bg-dot dot3"></div>
+        <div className="animated-bg-dot dot4"></div>
+        <div className="animated-bg-dot dot5"></div>
+        <div className="animated-bg-dot dot6"></div>
+        <div className="animated-bg-dot dot7"></div>
+        <div className="animated-bg-dot dot8"></div>
+        <div className="animated-bg-dot dot9"></div>
+        <div className="animated-bg-dot dot10"></div>
+        <div className="animated-bg-dot dot11"></div>
+        <div className="animated-bg-dot dot12"></div>
+        <div className="animated-bg-dot dot13"></div>
+        <div className="animated-bg-dot dot14"></div>
+        <div className="animated-bg-dot dot15"></div>
+        <div className="animated-bg-dot dot16"></div>
+        <div className="animated-bg-dot dot17"></div>
+        <div className="animated-bg-dot dot18"></div>
+        <div className="animated-bg-dot dot19"></div>
+        <div className="animated-bg-dot dot20"></div>
+      </div>
       
       <div className="relative z-10 pt-20 pb-10">
-        <div className="container mx-auto px-4">
-          {/* Modern Hero Section */}
-          <section className="text-center py-5 mb-8" data-aos="fade-up">
-            <h1 className="modern-title">Güncel Sağlık Haberleri</h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Sağlık dünyasındaki en son gelişmeler, araştırmalar ve öneriler burada!
-            </p>
+        <div className="container mx-auto max-w-4xl px-4">
+          {/* Hero Section */}
+          <section className="hero-section z-20 relative">
+            <div className="container">
+              <div className="hero-content" data-aos="fade-up">
+                <h1 className="hero-title text-gray-900"
+                    style={{
+                      color: '#1a237e',
+                      background: 'none',
+                      fontFamily: 'Poppins, Montserrat, Segoe UI, sans-serif',
+                      fontWeight: 900,
+                      fontSize: '3.2rem',
+                      letterSpacing: '2px',
+                      textShadow: '0 4px 24px rgba(26,35,126,0.18), 0 1px 0 #fff',
+                      lineHeight: 1.1,
+                      zIndex: 20,
+                      position: 'relative',
+                      marginBottom: '0.5rem',
+                    }}>
+                  Güncel Sağlık Haberleri
+                  <span style={{
+                    display: 'block',
+                    width: '120px',
+                    height: '4px',
+                    background: 'linear-gradient(90deg, #1a237e 0%, #43e97b 100%)',
+                    borderRadius: '2px',
+                    margin: '18px auto 0',
+                    boxShadow: '0 2px 8px rgba(26,35,126,0.18)'
+                  }}></span>
+                </h1>
+                <p className="hero-subtitle text-gray-800 mb-6" style={{color:'#222', zIndex:20, position:'relative'}}>
+                  Sağlık dünyasındaki en yeni gelişmeleri, bilimsel araştırmaları ve önerileri burada bulabilirsiniz. 
+                  Güvenilir kaynaklardan alınan, uzmanlar tarafından incelenen içeriklerle bilinçli bir yaşam için güncel kalın!
+                </p>
+
+                {/* Özellikler */}
+                <div className="row justify-content-center mb-6 g-4">
+                  <div className="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div className="feature-item" style={{
+                      minHeight: '180px',
+                      background: '#fff',
+                      borderRadius: '1rem',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '1.5rem 1rem',
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'rgba(76,175,80,0.08)',
+                        marginBottom: '1rem',
+                      }}>
+                        <i className="fas fa-check-circle" style={{ fontSize: '2rem', color: '#4CAF50' }}></i>
+                      </div>
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a237e', marginBottom: '0.5rem', textAlign: 'center' }}>Güvenilir Kaynaklar</h4>
+                      <p style={{ fontSize: '0.97rem', color: '#444', textAlign: 'center', margin: 0 }}>Doğruluğu teyit edilmiş, güvenilir kaynaklardan alınan haberler</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div className="feature-item" style={{
+                      minHeight: '180px',
+                      background: '#fff',
+                      borderRadius: '1rem',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '1.5rem 1rem',
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'rgba(129,199,132,0.10)',
+                        marginBottom: '1rem',
+                      }}>
+                        <i className="fas fa-clock" style={{ fontSize: '2rem', color: '#81C784' }}></i>
+                      </div>
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a237e', marginBottom: '0.5rem', textAlign: 'center' }}>Günlük Güncelleme</h4>
+                      <p style={{ fontSize: '0.97rem', color: '#444', textAlign: 'center', margin: 0 }}>24 saat içinde güncellenen en son sağlık haberleri</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div className="feature-item" style={{
+                      minHeight: '180px',
+                      background: '#fff',
+                      borderRadius: '1rem',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '1.5rem 1rem',
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '50%',
+                        background: 'rgba(102,187,106,0.10)',
+                        marginBottom: '1rem',
+                      }}>
+                        <i className="fas fa-user-md" style={{ fontSize: '2rem', color: '#66BB6A' }}></i>
+                      </div>
+                      <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a237e', marginBottom: '0.5rem', textAlign: 'center' }}>Uzman Kontrolü</h4>
+                      <p style={{ fontSize: '0.97rem', color: '#444', textAlign: 'center', margin: 0 }}>Uzman doktorlar tarafından incelenen içerikler</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* Content Box */}
-          <div className="bg-white bg-opacity-90 rounded-2xl shadow-xl p-8" data-aos="fade-up">
+          <div className="bg-white bg-opacity-95 rounded-2xl shadow-xl p-8 z-20 relative" data-aos="fade-up">
             {/* News Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {newsItems.map(news => (
-                <div key={news.id} className="bg-white rounded-lg shadow-lg overflow-hidden" data-aos="fade-up">
-                  <img src={news.image} className="w-full h-48 object-cover" alt={news.title} />
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
-                        {news.category}
-                      </span>
-                      <span className="text-sm text-gray-500">{news.date}</span>
+            {newsLoading ? (
+              <div className="text-center text-lg text-gray-500">Haberler yükleniyor...</div>
+            ) : newsError ? (
+              <div className="text-center text-red-600">{newsError}</div>
+            ) : (
+              <div className="news-page">
+                {newsItems.map((news, idx) => (
+                  <div key={idx} className="news-card z-20 relative">
+                    <div className="news-image">
+                      <img 
+                        src={news.urlToImage || 'https://placehold.co/600x400'} 
+                        alt={news.title} 
+                      />
                     </div>
-                    <h5 className="text-xl font-semibold text-gray-800 mb-3">{news.title}</h5>
-                    <p className="text-gray-600 mb-4">{news.summary}</p>
-                    <Link 
-                      href={`/news/${news.category}/${news.id}`} 
-                      className="inline-block px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-                    >
-                      Devamını Oku
-                    </Link>
+                    <div className="news-content">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
+                          {news.source?.name || 'Sağlık'}
+                        </span>
+                        <span className="text-xs text-gray-700">{news.publishedAt?.slice(0, 10)}</span>
+                      </div>
+                      <h3 className="text-gray-900" style={{color:'#1a1a1a'}}>{news.title}</h3>
+                      <p className="text-gray-800" style={{color:'#222'}}>{news.description || ''}</p>
+                      <a 
+                        href={news.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="read-more-btn"
+                      >
+                        Haberi Oku
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Newsletter Section */}
           <section className="newsletter-section py-12 my-8" data-aos="fade-up">
-            <div className="bg-white bg-opacity-90 rounded-xl p-8 shadow-lg">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Sağlık Bültenimize Abone Olun</h2>
-              <p className="text-gray-600 mb-6 text-center">
-                En güncel sağlık haberlerini ve önerilerini e-posta kutunuzda alın.
-              </p>
+            <div className="contact-form">
+              <h2 
+                className="newsletter-title mb-2"
+                style={{
+                  fontSize: '2.2rem',
+                  fontWeight: 800,
+                  color: '#1a237e',
+                  letterSpacing: '1px',
+                  textAlign: 'center',
+                  textShadow: '0 2px 8px rgba(26,35,126,0.10)',
+                  position: 'relative',
+                  marginBottom: '0.7rem',
+                  fontFamily: 'Poppins, Montserrat, Segoe UI, sans-serif',
+                }}
+              >
+                Sağlık Bültenimize Abone Olun
+                <span style={{
+                  display: 'block',
+                  width: '80px',
+                  height: '4px',
+                  background: 'linear-gradient(90deg, #4CAF50 0%, #43e97b 100%)',
+                  borderRadius: '2px',
+                  margin: '14px auto 0',
+                  boxShadow: '0 2px 8px rgba(76,175,80,0.18)'
+                }}></span>
+              </h2>
+              <div className="newsletter-subtitle text-gray-700 mb-6" style={{fontSize:'1.08rem',textAlign:'center',maxWidth:'420px',margin:'0 auto 1.5rem auto',color:'#333',fontWeight:500}}>
+                En güncel sağlık haberlerini ve önerilerini e-posta kutunuzda almak için hemen abone olun.
+              </div>
               <div className="max-w-md mx-auto">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                  <div className="relative">
+                  <div className="form-group">
                     <input 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                      className="form-control" 
                       placeholder="E-posta adresiniz"
                       required 
                     />
@@ -156,8 +304,9 @@ export default function NewsPage() {
                   <button 
                     type="submit" 
                     disabled={isLoading}
-                    className={`w-full px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    className="btn-send flex items-center justify-center gap-2"
                   >
+                    <i className="fas fa-envelope"></i>
                     {isLoading ? (
                       <span className="flex items-center justify-center">
                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
