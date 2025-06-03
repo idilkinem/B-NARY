@@ -24,12 +24,36 @@
 
 body {
   min-height: 100vh;
+  height: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-color);
   overflow-x: hidden;
   position: relative;
   margin: 0;
   padding: 0;
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #f8f9fa; /* Fallback renk */
+}
+
+html {
+  height: 100%;
+  min-height: 100vh;
+}
+
+main {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.page-content {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 body::before {
@@ -118,17 +142,17 @@ body::before {
 }
 
 .navbar {
-  background: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.2) !important; /* Arka planı daha şeffaf beyaz yapıldı */
   backdrop-filter: blur(1px);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   padding: 1rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
-  z-index: 1000;
+  z-index: 999; /* Z-index değeri */
 }
 
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.98) !important;
+  background: rgba(255, 255, 255, 0.6) !important; /* Kaydırınca biraz daha opak yapıldı */
   padding: 0.5rem 0;
 }
 
@@ -158,77 +182,65 @@ body::before {
 }
 
 .nav-link {
-  color: var(--text-color) !important;
+  color: var(--text-color) !important; /* Yazı rengi koyu gri */
   font-weight: 600;
   font-size: 1.1rem;
   padding: 0.7rem 1.2rem;
-  transition: all 0.3s ease;
+  transition: none !important; /* Tüm geçişleri kaldır */
   position: relative;
-  display: inline-flex;
+  z-index: 10 !important; /* Navbar içeriği için uygun z-index */
+  display: inline-flex; /* İkon ve metnin yan yana */
   align-items: center;
-  border-radius: 12px;
+  border-radius: 12px !important; /* Yuvarlak köşeler */
   margin: 0 0.3rem;
-  background: rgba(76, 175, 80, 0.1);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(76, 175, 80, 0.2);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: rgba(76, 175, 80, 0.1) !important; /* Hafif saydam yeşil arka plan */
+  backdrop-filter: blur(5px); /* Blur efekti */
+  border: 1px solid rgba(76, 175, 80, 0.2) !important; /* Yeşil kenarlık */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important; /* Hafif gölge */
+  text-decoration: none !important; /* Alt çizgi kaldır */
+  cursor: pointer !important; /* İmleç pointer */
+  animation: none !important; /* Animasyon kaldır */
+  background-size: auto !important; /* Background size reset */
 }
 
 .nav-link:hover {
-  color: #4CAF50 !important;
-  background: rgba(76, 175, 80, 0.15);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
-  border-color: rgba(76, 175, 80, 0.3);
+  color: var(--text-color) !important; /* Hover'da yazı rengini sabit tut */
+  background: rgba(76, 175, 80, 0.1) !important; /* Hover arka planını sabit tut */
+  transform: none !important; /* Transform kaldırıldı */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important; /* Gölge sabit tutuldu */
+  border-color: rgba(76, 175, 80, 0.2) !important; /* Kenarlık sabit tutuldu */
+  animation: none !important; /* Animasyon kaldırıldı */
+  background-size: auto !important; /* Background size reset */
+  cursor: pointer !important;
 }
 
 .nav-link i {
   font-size: 1.3rem;
-  margin-right: 0.6rem;
-  transition: all 0.3s ease;
-  color: #4CAF50;
-  background: rgba(76, 175, 80, 0.1);
-  padding: 0.4rem;
-  border-radius: 8px;
+  margin-right: 0.4rem !important; /* İkon ile metin arası boşluk */
+  transition: none !important; /* İkon geçişleri kaldır */
+  color: #4CAF50 !important; /* İkon rengi yeşil */
+  background: rgba(76, 175, 80, 0.1) !important; /* İkon arka planı */
+  padding: 0.4rem !important; /* İkon padding */
+  border-radius: 8px !important; /* İkon border radius */
 }
 
 .nav-link:hover i {
-  transform: scale(1.1) rotate(5deg);
-  background: rgba(76, 175, 80, 0.2);
+  transform: none !important; /* Transform kaldırıldı */
+  background: rgba(76, 175, 80, 0.1) !important; /* Hover ikon arka planı sabit tut */
+  color: #4CAF50 !important; /* Hover'da ikon rengini sabit tut */
 }
 
 .nav-link.active {
-  color: #4CAF50 !important;
-  background: rgba(76, 175, 80, 0.15);
-  font-weight: 700;
-  border-color: rgba(76, 175, 80, 0.3);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  color: #4CAF50 !important; /* Aktif yazı rengi yeşil */
+  background: rgba(76, 175, 80, 0.15) !important; /* Aktif arka plan */
+  font-weight: 700 !important; /* Aktifken kalın yazı */
+  border-color: rgba(76, 175, 80, 0.3) !important; /* Aktif kenarlık */
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2) !important; /* Aktif gölge */
 }
 
-.nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 3px;
-  background: linear-gradient(90deg, #4CAF50, #388E3C);
-  border-radius: 3px;
-  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
-}
-
+.nav-link.active::after,
 .nav-link.active::before {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 3px;
-  background: linear-gradient(90deg, #388E3C, #4CAF50);
-  border-radius: 3px;
-  opacity: 0.5;
+  display: none !important; /* Aktif alt çizgi efektleri kaldırıldı */
 }
 
 @media (max-width: 768px) {
@@ -245,8 +257,8 @@ body::before {
 }
 
 .btn-analyze {
-  background: linear-gradient(45deg, #4CAF50, #81C784, #66BB6A, #4CAF50);
-  color: white;
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
+  color: white !important;
   border: none;
   padding: 1rem 2.5rem;
   border-radius: 25px;
@@ -254,17 +266,22 @@ body::before {
   font-size: 1.1rem;
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
   min-width: 250px;
   background-size: 300% 300%;
   animation: hologram 3s ease infinite;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  position: relative;
+  z-index: 1010 !important;
+  text-decoration: none; /* Alt çizgiyi kaldır */
 }
 
 .btn-analyze:hover:not(.disabled) {
-  background: linear-gradient(45deg, #388E3C, #4CAF50, #66BB6A, #388E3C);
+  background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
+  background-size: 300% 300%;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-  border: 1px solid rgba(76, 175, 80, 0.5);
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+  border: 1px solid rgba(33, 150, 243, 0.5);
 }
 
 .btn-analyze.disabled {
@@ -306,18 +323,16 @@ body::before {
 
 /* Hero Section için arka plan */
 .hero-section {
-  background-image: url('/medical-bg.jpg') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
   position: relative;
-  min-height: 100vh;
+  min-height: 120vh; /* Minimum yüksekliği artırıldı */
+  width: 100%;
   display: flex;
   align-items: center;
-  padding: 8rem 0;
+  padding: 10rem 0; /* Padding artırıldı */
   overflow: hidden;
   margin-top: -80px;
   z-index: 0;
+  background: transparent !important;
 }
 
 .hero-section::before {
@@ -338,7 +353,7 @@ body::before {
   max-width: 800px;
   margin: 0 auto;
   padding: 3rem;
-  background: #ffffff;
+  background: transparent;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -490,23 +505,25 @@ body::before {
 .electrolytes-content .section-text {
   font-size: 1.2rem;
   line-height: 1.8;
-  color: #666;
+  color: #2c3e50; /* Koyu renk */
   margin-bottom: 3rem;
   text-align: center;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .electrolytes-content .section-text.mt-4 {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #666;
+  color: #2c3e50; /* Koyu renk */
   margin-top: 2rem;
   text-align: center;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 @media (max-width: 768px) {
@@ -635,20 +652,22 @@ body::before {
 }
 
 .feature-content h4 {
-  color: var(--text-color);
-  font-weight: 600;
+  color: #1a1f2e; /* Daha koyu renk */
+  font-weight: 700; /* Daha kalın */
   margin-bottom: 0.8rem;
   font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Hafif gölge */
 }
 
 .feature-content p {
-  color: #666;
+  color: #2c3e50; /* Daha koyu renk */
   margin: 0;
   line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Hafif gölge */
 }
 
 .about-section {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.4); /* Opaklık düşürüldü */
   padding: 8rem 0;
   backdrop-filter: blur(10px);
   position: relative;
@@ -693,13 +712,14 @@ body::before {
 .section-text {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #444;
+  color: #2c3e50; /* Koyu renk */
   margin-bottom: 2rem;
   text-align: left;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .contact-section {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.4); /* Opaklık düşürüldü */
   padding: 8rem 0;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -762,16 +782,18 @@ body::before {
 
 .contact-item h5 {
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700; /* Daha kalın */
   margin: 0 0 0.5rem 0;
-  color: var(--text-color);
+  color: #1a1f2e; /* En koyu renk */
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .contact-item p {
-  color: #666;
+  color: #2c3e50; /* Koyu renk */
   margin: 0;
   font-size: 1.1rem;
   line-height: 1.6;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 @media (max-width: 768px) {
@@ -805,9 +827,10 @@ body::before {
 }
 
 .analysis-form-container {
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: #ffffff; /* Tamamen opak beyaz */
+  backdrop-filter: blur(1px); /* Mevcut blur (kalabilir) */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Daha belirgin kenarlık */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Mevcut gölge */
   padding: 2rem;
   margin-bottom: 2rem;
 }
@@ -842,8 +865,8 @@ body::before {
 }
 
 .btn-analyze {
-  background: linear-gradient(45deg, #4CAF50, #81C784, #66BB6A, #4CAF50);
-  color: white;
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
+  color: white !important;
   border: none;
   padding: 12px 30px;
   border-radius: 25px;
@@ -852,9 +875,11 @@ body::before {
 }
 
 .btn-analyze:hover {
-  background: linear-gradient(45deg, #388E3C, #4CAF50, #66BB6A, #388E3C);
+  background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
+  background-size: 300% 300%;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+  border: 1px solid rgba(33, 150, 243, 0.5);
 }
 
 .btn-analyze.disabled {
@@ -869,18 +894,19 @@ body::before {
   text-decoration: none;
   padding: 0.8rem 1.5rem;
   border-radius: 25px;
-  background: linear-gradient(45deg, #4CAF50, #81C784, #66BB6A, #4CAF50);
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   transition: all 0.3s ease;
   font-weight: 600;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
   border: none;
 }
 
 .back-button:hover {
-  background: linear-gradient(45deg, #388E3C, #4CAF50, #66BB6A, #388E3C);
+  background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
+  background-size: 300% 300%;
   transform: translateX(-5px);
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.5);
 }
 
 .back-button i {
@@ -1082,15 +1108,15 @@ body::before {
   background: transparent;
 }
 
-/* Kartları güncelle */
+/* Kartları güncelle - Tamamen opak beyaz */
 .analysis-form-container,
 .user-info-card,
 .feature-item,
 .electrolyte-item {
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(1px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: #ffffff; /* Tamamen opak beyaz */
+  backdrop-filter: blur(1px); /* Mevcut blur (kalabilir) */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Daha belirgin kenarlık */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Mevcut gölge */
 }
 
 .news-page {
@@ -1108,7 +1134,7 @@ body::before {
   }
 }
 .news-card {
-  background: #ffffff;
+  background: #ffffff; /* Tamamen opak beyaz */
   border-radius: 15px;
   box-shadow: 0 4px 30px rgba(0,0,0,0.1);
   overflow: hidden;
@@ -1139,17 +1165,19 @@ body::before {
 
 .news-content h3 {
   font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--text-color);
+  font-weight: 700;
+  color: #1a1f2e; /* En koyu renk */
   margin-bottom: 1rem;
   line-height: 1.4;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .news-content p {
-  color: #666;
+  color: #2c3e50; /* Koyu renk */
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 1.5rem;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .read-more {
@@ -1162,8 +1190,13 @@ body::before {
 }
 
 .read-more:hover {
-  color: #4CAF50;
+  color: white !important;
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   transform: translateX(5px);
+  animation: hologram 3s ease infinite;
+  background-size: 300% 300%;
+  border-radius: 5px;
+  padding: 0 5px;
 }
 
 .read-more::after {
@@ -1295,17 +1328,18 @@ body::before {
 .feature-list .feature-item p {
   margin: 0;
   font-size: 1.1rem;
-  color: var(--text-color);
+  color: #2c3e50; /* Koyu renk */
   text-align: left;
+  text-shadow: none; /* Gölge kaldırıldı */
 }
 
 .contact-form {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  background: #ffffff; /* Tamamen opak beyaz */
+  backdrop-filter: blur(10px); /* Mevcut blur (kalabilir) */
   padding: 2.5rem;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Daha belirgin kenarlık */
   position: relative;
   overflow: hidden;
 }
@@ -1350,7 +1384,7 @@ body::before {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background-color: var(--bg-color);
+  background-color: rgba(255, 255, 255, 0.15); /* Opaklık düşürüldü */
   color: var(--text-color);
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -1358,8 +1392,9 @@ body::before {
 
 .contact-form .form-control:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+  border-color: #4CAF50; /* Focus rengi */
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.25);
+  background-color: rgba(255, 255, 255, 0.25); /* Focus'ta biraz daha az şeffaf */
 }
 
 .contact-form .form-control::placeholder {
@@ -1368,8 +1403,8 @@ body::before {
 }
 
 .contact-form textarea.form-control {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: rgba(255, 255, 255, 0.15); /* Opaklık düşürüldü */
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   color: #2c3e50;
   padding: 0.75rem 1rem;
@@ -1380,10 +1415,11 @@ body::before {
 }
 
 .contact-form textarea.form-control:focus {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.25); /* Focus'ta biraz daha az şeffaf */
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
   border-color: #4CAF50;
   color: #2c3e50;
+  outline: none;
 }
 
 .contact-form textarea.form-control::placeholder {
@@ -1448,7 +1484,7 @@ body::before {
 
 /* Textarea stilleri */
 textarea.form-control {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.15); /* Opaklık düşürüldü */
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   color: #444;
@@ -1461,7 +1497,7 @@ textarea.form-control {
 }
 
 textarea.form-control:focus {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.25); /* Focus'ta biraz daha az şeffaf */
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.1);
   border-color: #4CAF50;
   outline: none;
@@ -1792,10 +1828,10 @@ textarea.form-control:hover {
   text-decoration: none;
   padding: 0.8rem 1.5rem;
   border-radius: 25px;
-  background: linear-gradient(45deg, #4CAF50, #81C784, #66BB6A, #4CAF50);
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   transition: all 0.3s ease;
   font-weight: 600;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
   border: none;
   position: absolute;
   left: 15px;
@@ -1803,10 +1839,11 @@ textarea.form-control:hover {
 }
 
 .back-button-blue:hover {
-  background: linear-gradient(45deg, #388E3C, #4CAF50, #66BB6A, #388E3C);
+  background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
+  background-size: 300% 300%;
   transform: translateX(-5px);
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.5);
 }
 
 .back-button-blue i {
@@ -1870,11 +1907,12 @@ textarea.form-control:hover {
 .nav-link,
 .read-more {
   transition: all 0.3s ease;
-  background: linear-gradient(45deg, #4CAF50, #81C784, #66BB6A, #4CAF50);
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   background-size: 300% 300%;
   animation: hologram 3s ease infinite;
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+  color: white !important;
 }
 
 .btn-analyze:hover:not(.disabled),
@@ -1883,9 +1921,11 @@ textarea.form-control:hover {
 .btn-send:hover,
 .nav-link:hover,
 .read-more:hover {
+  background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
+  background-size: 300% 300%;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-  border: 1px solid rgba(76, 175, 80, 0.5);
+  box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+  border: 1px solid rgba(33, 150, 243, 0.5);
 }
 
 /* Özel buton hover efektleri */
@@ -1907,13 +1947,18 @@ textarea.form-control:hover {
 }
 
 .nav-link:hover {
-  color: #4CAF50 !important;
-  background: rgba(76, 175, 80, 0.15);
+  color: #2196F3 !important;
+  background: linear-gradient(45deg, rgba(33, 150, 243, 0.1), rgba(76, 175, 80, 0.15)) !important;
 }
 
 .read-more:hover {
-  color: #4CAF50;
+  color: white !important;
+  background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   transform: translateX(5px);
+  animation: hologram 3s ease infinite;
+  background-size: 300% 300%;
+  border-radius: 5px;
+  padding: 0 5px;
 }
 
 /* Buton içindeki ikonlar için hover efekti */
@@ -1924,7 +1969,7 @@ textarea.form-control:hover {
 .nav-link:hover i,
 .read-more:hover::after {
   transform: translateX(3px);
-  color: #ffffff;
+  color: white;
 }
 
 /* Yazdırma Stilleri */
@@ -1995,7 +2040,7 @@ textarea.form-control:hover {
 .health-info-section-single textarea.form-control {
   border: none;
   border-radius: 12px;
-  background: #fafbfc;
+  background: rgba(255, 255, 255, 0.15); /* Opaklık düşürüldü */
   box-shadow: none;
   padding: 1.2rem;
   font-size: 1.1rem;
@@ -2235,4 +2280,140 @@ textarea.form-control:hover {
   .about-section::before {
     background: rgba(255, 255, 255, 0.95);
   }
+}
+
+.login-background {
+  background-image: url('/background-image.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.main-container {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.modern-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Sayfa içeriğini arka planın üzerine getir */
+.page-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Navbar'ı en üstte tut */
+.navbar {
+  z-index: 1000 !important;
+}
+
+/* Hakkımızda linki için özel stil - Alt çizgi ekle */
+[href="#about"].nav-link {
+  border-bottom: 2px solid #4CAF50 !important; /* Yeşil alt çizgi */
+  padding-bottom: 0.2rem !important; /* Alt çizgi ile metin arasına boşluk */
+}
+
+/* İsteğe bağlı: Hover durumunda alt çizginin rengini değiştirebilirsiniz */
+[href="#about"].nav-link:hover {
+  border-bottom-color: #2196F3 !important; /* Hover'da mavi çizgi */
+}
+
+/* Sol alt köşe yazısı */
+.bottom-left-text {
+  position: fixed;
+  bottom: 15px;
+  left: 15px;
+  font-size: 0.8rem; /* Küçük font boyutu */
+  color: #666; /* Biraz koyu renk */
+  z-index: 1000; /* Diğer elementlerin üzerinde olması için */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobil cihazlarda konumlandırma */
+@media (max-width: 768px) {
+  .bottom-left-text {
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Sağ alt köşe yazısı */
+.bottom-right-text {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  font-size: 0.8rem;
+  color: #666;
+  z-index: 1000;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .bottom-right-text {
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.7rem;
+  }
+}
+
+.analyze-button {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  text-decoration: none; /* Alt çizgiyi kaldır */
+}
+
+.analyze-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+  z-index: -1;
+}
+
+.analyze-button:hover::before {
+  left: 100%;
+}
+
+.analyze-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+}
+
+.analyze-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

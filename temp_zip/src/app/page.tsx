@@ -61,11 +61,11 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <main className="main-container">
       <div className="modern-background"></div>
       <div className="page-content">
         {/* Navbar */}
-        <nav className="navbar navbar-expand-lg fixed-top">
+        <nav className="navbar navbar-expand-lg fixed-top" style={{ zIndex: 1000 }}>
           <div className="container">
             <Link href="/" className="navbar-brand">
               <i className="fas fa-flask me-2"></i>
@@ -85,7 +85,7 @@ export default function Home() {
         </nav>
 
         {/* Hero Section */}
-        <section className="hero-section">
+        <section className="hero-section" style={{ zIndex: 1 }}>
           <div className="container">
             <div className="hero-content" data-aos="fade-up">
               <h1 className="hero-title">Kan Analizi ile Sağlığınızı Keşfedin</h1>
@@ -102,7 +102,7 @@ export default function Home() {
         </section>
 
         {/* Electrolytes Section */}
-        <section className="electrolytes-section">
+        <section className="electrolytes-section" style={{ zIndex: 1, position: 'relative' }}>
           <div className="container">
             <h2 className="section-title text-center mb-5" data-aos="fade-up">Elektrolitler ve Minerallerin Vücuttaki Önemi</h2>
             <div className="row">
@@ -147,7 +147,7 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="feature-section">
+        <section id="features" className="feature-section" style={{ zIndex: 1, position: 'relative' }}>
           <div className="container">
             <h2 className="section-title text-center mb-5" data-aos="fade-up">Özelliklerimiz</h2>
             <div className="row">
@@ -189,7 +189,7 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="about-section">
+        <section id="about" className="about-section" style={{ zIndex: 1, position: 'relative' }}>
           <div className="container">
             <div className="row">
               <div className="col-lg-6 text-start" data-aos="fade-up">
@@ -368,7 +368,10 @@ export default function Home() {
             </div>
           </div>
         </section>
-        </div>
-      </main>
+      </div>
+      
+      {/* İ & N Yazısı */}
+      <div className="bottom-right-text">İ & N</div>
+    </main>
   );
 }
