@@ -21,65 +21,45 @@ var _s = __turbopack_context__.k.signature();
 function Analysis() {
     _s();
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
-        // Kişisel Bilgiler
         firstName: '',
         lastName: '',
         tcNo: '',
         birthDate: '',
-        // Fiziksel Bilgiler
         height: '',
         weight: '',
         bloodType: '',
         gender: '',
-        // Sağlık Bilgileri
         chronicDiseases: [],
         allergies: [],
         medications: '',
         recentIllnesses: ''
     });
     const [isFormValid, setIsFormValid] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    const [selectedFile, setSelectedFile] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [file, setFile] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const [otherChronicText, setOtherChronicText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [otherAllergyText, setOtherAllergyText] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [fileSuccess, setFileSuccess] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "Analysis.useEffect": ()=>{
-            validateForm();
-        }
-    }["Analysis.useEffect"], []);
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
-        "Analysis.useEffect": ()=>{
-            const { medications, recentIllnesses, ...requiredFields } = formData;
-            validateForm();
+            const isPersonalInfoValid = formData.firstName.trim() !== '' && formData.lastName.trim() !== '' && formData.tcNo.trim() !== '' && formData.tcNo.length === 11 && formData.birthDate !== '';
+            const isPhysicalInfoValid = formData.height !== '' && formData.weight !== '' && formData.bloodType !== '' && formData.gender !== '';
+            const isHealthInfoValid = (formData.chronicDiseases.length > 0 || formData.chronicDiseases.includes('yok')) && (formData.allergies.length > 0 || formData.allergies.includes('yok'));
+            const isFileValid = file !== null;
+            setIsFormValid(isPersonalInfoValid && isPhysicalInfoValid && isHealthInfoValid && isFileValid);
         }
     }["Analysis.useEffect"], [
-        formData.firstName,
-        formData.lastName,
-        formData.tcNo,
-        formData.birthDate,
-        formData.height,
-        formData.weight,
-        formData.bloodType,
-        formData.gender,
-        formData.chronicDiseases,
-        formData.allergies,
-        selectedFile
+        formData,
+        file
     ]);
     const handleInputChange = (e)=>{
         const { name, value } = e.target;
-        if (name === 'medications' || name === 'recentIllnesses') {
-            setFormData((prev)=>({
-                    ...prev,
-                    [name]: value
-                }));
-        } else {
-            setFormData((prev)=>({
-                    ...prev,
-                    [name]: value
-                }));
-            validateForm();
-        }
+        setFormData((prev)=>({
+                ...prev,
+                [name]: value
+            }));
     };
     const handleCheckboxChange = (e)=>{
         const { name, value, checked } = e.target;
@@ -110,167 +90,80 @@ function Analysis() {
                 }
             });
         }
-        validateForm();
     };
     const handleFileChange = (e)=>{
         if (e.target.files && e.target.files[0]) {
-            setSelectedFile(e.target.files[0]);
-            setFileSuccess(true);
+            const selected = e.target.files[0];
+            if (selected.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || selected.type === 'application/vnd.ms-excel') {
+                setFile(selected);
+                setFileSuccess(true);
+                setError(null);
+            } else {
+                setError('Lütfen sadece Excel dosyası (.xlsx veya .xls) yükleyin.');
+                setFile(null);
+                setFileSuccess(false);
+            }
         } else {
-            setSelectedFile(null);
+            setFile(null);
             setFileSuccess(false);
         }
-        validateForm();
     };
-    const validateForm = ()=>{
-        // Kişisel bilgilerin kontrolü
-        const isPersonalInfoValid = formData.firstName.trim() !== '' && formData.lastName.trim() !== '' && formData.tcNo.trim() !== '' && formData.tcNo.length === 11 && formData.birthDate !== '';
-        // Fiziksel bilgilerin kontrolü
-        const isPhysicalInfoValid = formData.height !== '' && formData.weight !== '' && formData.bloodType !== '' && formData.gender !== '';
-        // Sağlık bilgilerinin kontrolü (sadece kronik hastalıklar ve alerjiler)
-        const isHealthInfoValid = (formData.chronicDiseases.length > 0 || formData.chronicDiseases.includes('yok')) && (formData.allergies.length > 0 || formData.allergies.includes('yok'));
-        // Dosya kontrolü
-        const isFileValid = selectedFile !== null;
-        // Sadece zorunlu alanların kontrolü
-        const isValid = isPersonalInfoValid && isPhysicalInfoValid && isHealthInfoValid && isFileValid;
-        // Debug için konsola yazdır
-        console.log('Form Validation:', {
-            isPersonalInfoValid,
-            isPhysicalInfoValid,
-            isHealthInfoValid,
-            isFileValid,
-            isValid
-        });
-        setIsFormValid(isValid);
+    const handleTcNoChange = (e)=>{
+        const value = e.target.value.replace(/[^0-9]/g, '');
+        if (value.length <= 11) {
+            setFormData((prev)=>({
+                    ...prev,
+                    tcNo: value
+                }));
+        }
     };
     const handleSubmit = async (e)=>{
         e.preventDefault();
-        // Form verilerini kontrol et
-        if (!isFormValid) {
+        setError(null);
+        if (!file) {
+            setError('Lütfen bir Excel dosyası seçin.');
             return;
         }
-        // Form verilerini URL parametrelerine dönüştür
-        const params = new URLSearchParams({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            tcNo: formData.tcNo,
-            birthDate: formData.birthDate,
-            height: formData.height,
-            weight: formData.weight,
-            bloodType: formData.bloodType,
-            gender: formData.gender,
-            chronicDiseases: formData.chronicDiseases.join(','),
-            allergies: formData.allergies.join(','),
-            medications: formData.medications,
-            recentIllnesses: formData.recentIllnesses
+        setIsLoading(true);
+        const form = new FormData();
+        form.append('file', file);
+        Object.entries(formData).forEach(([key, value])=>{
+            if (Array.isArray(value)) {
+                form.append(key, value.join(','));
+            } else {
+                form.append(key, value);
+            }
         });
-        // Yeni sayfaya yönlendir
-        router.push(`/analysis/result?${params.toString()}`);
+        try {
+            const res = await fetch('/api/analyze-excel', {
+                method: 'POST',
+                body: form
+            });
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Analiz sırasında hata oluştu.');
+            }
+            const data = await res.json();
+            if ("TURBOPACK compile-time truthy", 1) {
+                sessionStorage.setItem('analysisResult', JSON.stringify(data));
+                router.push('/analysis/result');
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Analiz sırasında hata oluştu.');
+        } finally{
+            setIsLoading(false);
+        }
     };
-    const referenceRanges = [
-        {
-            name: 'WBC (Lökosit)',
-            range: '4.5-11.0 10^3/µL',
-            description: 'Enfeksiyon ve bağışıklık durumu göstergesi'
-        },
-        {
-            name: 'RBC (Eritrosit)',
-            range: '4.2-6.1 10^6/µL',
-            description: 'Oksijen taşıma kapasitesi göstergesi'
-        },
-        {
-            name: 'HGB (Hemoglobin)',
-            range: '12.0-17.5 g/dL',
-            description: 'Kansızlık durumu göstergesi'
-        },
-        {
-            name: 'HCT (Hematokrit)',
-            range: '36-50%',
-            description: 'Kan yoğunluğu göstergesi'
-        },
-        {
-            name: 'MCV',
-            range: '80-100 fL',
-            description: 'Kırmızı kan hücresi boyutu'
-        },
-        {
-            name: 'PLT (Trombosit)',
-            range: '150-450 10^3/µL',
-            description: 'Pıhtılaşma faktörü'
-        }
-    ];
-    const diseases = [
-        {
-            category: 'Anemi (Kansızlık)',
-            conditions: [
-                {
-                    name: 'Demir Eksikliği Anemisi',
-                    indicators: [
-                        'Düşük HGB',
-                        'Düşük MCV'
-                    ]
-                },
-                {
-                    name: 'B12 Eksikliği Anemisi',
-                    indicators: [
-                        'Düşük HGB',
-                        'Yüksek MCV'
-                    ]
-                },
-                {
-                    name: 'Kronik Hastalık Anemisi',
-                    indicators: [
-                        'Düşük HGB',
-                        'Normal MCV'
-                    ]
-                }
-            ]
-        },
-        {
-            category: 'Enfeksiyonlar',
-            conditions: [
-                {
-                    name: 'Bakteriyel Enfeksiyon',
-                    indicators: [
-                        'Yüksek WBC',
-                        'Yüksek Nötrofil'
-                    ]
-                },
-                {
-                    name: 'Viral Enfeksiyon',
-                    indicators: [
-                        'Normal/Düşük WBC',
-                        'Yüksek Lenfosit'
-                    ]
-                }
-            ]
-        },
-        {
-            category: 'Kanama Bozuklukları',
-            conditions: [
-                {
-                    name: 'Trombositopeni',
-                    indicators: [
-                        'Düşük PLT'
-                    ]
-                },
-                {
-                    name: 'Trombositoz',
-                    indicators: [
-                        'Yüksek PLT'
-                    ]
-                }
-            ]
-        }
-    ];
+    // ... referenceRanges and diseases arrays remain unchanged ...
+    // (You can keep your referenceRanges and diseases arrays here)
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "modern-background"
             }, void 0, false, {
                 fileName: "[project]/src/app/analysis/page.tsx",
-                lineNumber: 200,
-                columnNumber: 7
+                lineNumber: 163,
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "page-content",
@@ -287,15 +180,15 @@ function Analysis() {
                                         className: "fas fa-arrow-left me-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                        lineNumber: 205,
-                                        columnNumber: 15
+                                        lineNumber: 168,
+                                        columnNumber: 17
                                     }, this),
                                     "Ana Sayfa"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                lineNumber: 204,
-                                columnNumber: 13
+                                lineNumber: 167,
+                                columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "row justify-content-center",
@@ -310,8 +203,8 @@ function Analysis() {
                                                 children: "Kan Tahlili Analizi"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                lineNumber: 211,
-                                                columnNumber: 19
+                                                lineNumber: 174,
+                                                columnNumber: 21
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
                                                 onSubmit: handleSubmit,
@@ -325,8 +218,8 @@ function Analysis() {
                                                                 children: "Kişisel Bilgiler"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 215,
-                                                                columnNumber: 23
+                                                                lineNumber: 178,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "row",
@@ -340,8 +233,8 @@ function Analysis() {
                                                                                 children: "Ad"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 218,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 181,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "text",
@@ -353,14 +246,14 @@ function Analysis() {
                                                                                 required: true
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 219,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 182,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 217,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 180,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "col-md-6 mb-3",
@@ -371,8 +264,8 @@ function Analysis() {
                                                                                 children: "Soyad"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 230,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 193,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "text",
@@ -384,20 +277,20 @@ function Analysis() {
                                                                                 required: true
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 231,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 194,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 229,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 192,
+                                                                        columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 216,
-                                                                columnNumber: 23
+                                                                lineNumber: 179,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "row",
@@ -411,8 +304,8 @@ function Analysis() {
                                                                                 children: "TC Kimlik No"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 244,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 207,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "text",
@@ -420,31 +313,21 @@ function Analysis() {
                                                                                 id: "tcNo",
                                                                                 name: "tcNo",
                                                                                 value: formData.tcNo,
-                                                                                onChange: (e)=>{
-                                                                                    // Sadece rakam girilsin
-                                                                                    const value = e.target.value.replace(/[^0-9]/g, '');
-                                                                                    if (value.length <= 11) {
-                                                                                        setFormData((prev)=>({
-                                                                                                ...prev,
-                                                                                                tcNo: value
-                                                                                            }));
-                                                                                        validateForm();
-                                                                                    }
-                                                                                },
+                                                                                onChange: handleTcNoChange,
                                                                                 required: true,
                                                                                 inputMode: "numeric",
                                                                                 pattern: "[0-9]*",
                                                                                 maxLength: 11
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 245,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 208,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 243,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 206,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "col-md-6 mb-3",
@@ -455,8 +338,8 @@ function Analysis() {
                                                                                 children: "Doğum Tarihi"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 266,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 222,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "date",
@@ -468,37 +351,20 @@ function Analysis() {
                                                                                 required: true
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 267,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 223,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 265,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 221,
+                                                                        columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 242,
-                                                                columnNumber: 23
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 214,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "form-section",
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                                                className: "section-subtitle",
-                                                                children: "Fiziksel Bilgiler"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 282,
-                                                                columnNumber: 23
+                                                                lineNumber: 205,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "row",
@@ -512,8 +378,8 @@ function Analysis() {
                                                                                 children: "Boy (cm)"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 285,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 236,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "number",
@@ -522,19 +388,17 @@ function Analysis() {
                                                                                 name: "height",
                                                                                 value: formData.height,
                                                                                 onChange: handleInputChange,
-                                                                                required: true,
-                                                                                min: "100",
-                                                                                max: "250"
+                                                                                required: true
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 286,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 237,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 284,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 235,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "col-md-6 mb-3",
@@ -545,8 +409,8 @@ function Analysis() {
                                                                                 children: "Kilo (kg)"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 299,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 248,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                                 type: "number",
@@ -555,25 +419,23 @@ function Analysis() {
                                                                                 name: "weight",
                                                                                 value: formData.weight,
                                                                                 onChange: handleInputChange,
-                                                                                required: true,
-                                                                                min: "30",
-                                                                                max: "300"
+                                                                                required: true
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 300,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 249,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 298,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 247,
+                                                                        columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 283,
-                                                                columnNumber: 23
+                                                                lineNumber: 234,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "row",
@@ -587,8 +449,8 @@ function Analysis() {
                                                                                 children: "Kan Grubu"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 315,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 262,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                                                 className: "form-select",
@@ -603,84 +465,84 @@ function Analysis() {
                                                                                         children: "Seçiniz"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 324,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 271,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "A+",
                                                                                         children: "A Rh+"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 325,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 272,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "A-",
                                                                                         children: "A Rh-"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 326,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 273,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "B+",
                                                                                         children: "B Rh+"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 327,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 274,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "B-",
                                                                                         children: "B Rh-"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 328,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 275,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "AB+",
                                                                                         children: "AB Rh+"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 329,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 276,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "AB-",
                                                                                         children: "AB Rh-"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 330,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 277,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "0+",
                                                                                         children: "0 Rh+"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 331,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 278,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "0-",
                                                                                         children: "0 Rh-"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 332,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 279,
+                                                                                        columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 316,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 263,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 314,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 261,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "col-md-6 mb-3",
@@ -691,8 +553,8 @@ function Analysis() {
                                                                                 children: "Cinsiyet"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 336,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 283,
+                                                                                columnNumber: 29
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
                                                                                 className: "form-select",
@@ -707,886 +569,48 @@ function Analysis() {
                                                                                         children: "Seçiniz"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 345,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 292,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "male",
                                                                                         children: "Erkek"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 346,
-                                                                                        columnNumber: 29
+                                                                                        lineNumber: 293,
+                                                                                        columnNumber: 31
                                                                                     }, this),
                                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
                                                                                         value: "female",
                                                                                         children: "Kadın"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 347,
-                                                                                        columnNumber: 29
-                                                                                    }, this)
-                                                                                ]
-                                                                            }, void 0, true, {
-                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 337,
-                                                                                columnNumber: 27
-                                                                            }, this)
-                                                                        ]
-                                                                    }, void 0, true, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 335,
-                                                                        columnNumber: 25
-                                                                    }, this)
-                                                                ]
-                                                            }, void 0, true, {
-                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 313,
-                                                                columnNumber: 23
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 281,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "form-section",
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                                                className: "section-subtitle",
-                                                                children: "Sağlık Bilgileri"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 355,
-                                                                columnNumber: 23
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                className: "health-info-section",
-                                                                children: [
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "health-info-box",
-                                                                        children: [
-                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
-                                                                                className: "subsection-title",
-                                                                                children: "Kronik Hastalıklar"
-                                                                            }, void 0, false, {
-                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 360,
-                                                                                columnNumber: 27
-                                                                            }, this),
-                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                className: "checkbox-group",
-                                                                                children: [
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "diabetes",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "diyabet",
-                                                                                                checked: formData.chronicDiseases.includes('diyabet'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 363,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "diabetes",
-                                                                                                children: "Diyabet"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 372,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 362,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "hypertension",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "hipertansiyon",
-                                                                                                checked: formData.chronicDiseases.includes('hipertansiyon'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 375,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "hypertension",
-                                                                                                children: "Hipertansiyon"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 384,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 374,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "heartDisease",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "kalp-hastaligi",
-                                                                                                checked: formData.chronicDiseases.includes('kalp-hastaligi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 387,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "heartDisease",
-                                                                                                children: "Kalp Hastalığı"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 396,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 386,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "asthma",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "astim",
-                                                                                                checked: formData.chronicDiseases.includes('astim'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 399,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "asthma",
-                                                                                                children: "Astım"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 408,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 398,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "koah",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "koah",
-                                                                                                checked: formData.chronicDiseases.includes('koah'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 411,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "koah",
-                                                                                                children: "KOAH"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 420,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 410,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "thyroid",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "tiroid",
-                                                                                                checked: formData.chronicDiseases.includes('tiroid'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 423,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "thyroid",
-                                                                                                children: "Tiroid"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 432,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 422,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "arthritis",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "artrit",
-                                                                                                checked: formData.chronicDiseases.includes('artrit'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 435,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "arthritis",
-                                                                                                children: "Artrit"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 444,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 434,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "migraine",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "migren",
-                                                                                                checked: formData.chronicDiseases.includes('migren'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 447,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "migraine",
-                                                                                                children: "Migren"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 456,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 446,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "noChronic",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "yok",
-                                                                                                checked: formData.chronicDiseases.includes('yok'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 459,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "noChronic",
-                                                                                                children: "Yok"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 468,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 458,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "otherChronic",
-                                                                                                name: "chronicDiseases",
-                                                                                                value: "diger",
-                                                                                                checked: formData.chronicDiseases.includes('diger'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 471,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "otherChronic",
-                                                                                                children: "Diğer"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 480,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 470,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    formData.chronicDiseases.includes('diger') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                        type: "text",
-                                                                                        className: "form-control mt-2",
-                                                                                        placeholder: "Lütfen belirtiniz",
-                                                                                        value: otherChronicText,
-                                                                                        onChange: (e)=>setOtherChronicText(e.target.value),
-                                                                                        style: {
-                                                                                            fontSize: '1rem'
-                                                                                        }
-                                                                                    }, void 0, false, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 484,
+                                                                                        lineNumber: 294,
                                                                                         columnNumber: 31
                                                                                     }, this)
                                                                                 ]
                                                                             }, void 0, true, {
                                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 361,
-                                                                                columnNumber: 27
+                                                                                lineNumber: 284,
+                                                                                columnNumber: 29
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 359,
-                                                                        columnNumber: 25
-                                                                    }, this),
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "health-info-box",
-                                                                        children: [
-                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h4", {
-                                                                                className: "subsection-title",
-                                                                                children: "Alerjiler"
-                                                                            }, void 0, false, {
-                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 498,
-                                                                                columnNumber: 27
-                                                                            }, this),
-                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                className: "checkbox-group",
-                                                                                children: [
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "foodAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "gida-alerjisi",
-                                                                                                checked: formData.allergies.includes('gida-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 501,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "foodAllergy",
-                                                                                                children: "Gıda Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 510,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 500,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "medicationAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "ilac-alerjisi",
-                                                                                                checked: formData.allergies.includes('ilac-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 513,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "medicationAllergy",
-                                                                                                children: "İlaç Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 522,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 512,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "pollenAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "polen-alerjisi",
-                                                                                                checked: formData.allergies.includes('polen-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 525,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "pollenAllergy",
-                                                                                                children: "Polen Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 534,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 524,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "dustAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "toz-alerjisi",
-                                                                                                checked: formData.allergies.includes('toz-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 537,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "dustAllergy",
-                                                                                                children: "Toz Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 546,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 536,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "animalAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "hayvan-alerjisi",
-                                                                                                checked: formData.allergies.includes('hayvan-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 549,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "animalAllergy",
-                                                                                                children: "Hayvan Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 558,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 548,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "moldAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "kuf-alerjisi",
-                                                                                                checked: formData.allergies.includes('kuf-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 561,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "moldAllergy",
-                                                                                                children: "Küf Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 570,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 560,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "latexAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "lateks-alerjisi",
-                                                                                                checked: formData.allergies.includes('lateks-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 573,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "latexAllergy",
-                                                                                                children: "Lateks Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 582,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 572,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "insectAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "bocek-alerjisi",
-                                                                                                checked: formData.allergies.includes('bocek-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 585,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "insectAllergy",
-                                                                                                children: "Böcek Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 594,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 584,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "metalAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "metal-alerjisi",
-                                                                                                checked: formData.allergies.includes('metal-alerjisi'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 597,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "metalAllergy",
-                                                                                                children: "Metal Alerjisi"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 606,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 596,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "noAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "yok",
-                                                                                                checked: formData.allergies.includes('yok'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 609,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "noAllergy",
-                                                                                                children: "Yok"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 618,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 608,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                                        className: "form-check",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                                type: "checkbox",
-                                                                                                className: "form-check-input",
-                                                                                                id: "otherAllergy",
-                                                                                                name: "allergies",
-                                                                                                value: "diger",
-                                                                                                checked: formData.allergies.includes('diger'),
-                                                                                                onChange: handleCheckboxChange
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 621,
-                                                                                                columnNumber: 31
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                                                                                className: "form-check-label",
-                                                                                                htmlFor: "otherAllergy",
-                                                                                                children: "Diğer"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 630,
-                                                                                                columnNumber: 31
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 620,
-                                                                                        columnNumber: 29
-                                                                                    }, this),
-                                                                                    formData.allergies.includes('diger') && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                                                        type: "text",
-                                                                                        className: "form-control mt-2",
-                                                                                        placeholder: "Lütfen belirtiniz",
-                                                                                        value: otherAllergyText,
-                                                                                        onChange: (e)=>setOtherAllergyText(e.target.value),
-                                                                                        style: {
-                                                                                            fontSize: '1rem'
-                                                                                        }
-                                                                                    }, void 0, false, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 634,
-                                                                                        columnNumber: 31
-                                                                                    }, this)
-                                                                                ]
-                                                                            }, void 0, true, {
-                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                lineNumber: 499,
-                                                                                columnNumber: 27
-                                                                            }, this)
-                                                                        ]
-                                                                    }, void 0, true, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 497,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 282,
+                                                                        columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 357,
-                                                                columnNumber: 23
+                                                                lineNumber: 260,
+                                                                columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 354,
-                                                        columnNumber: 21
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "health-info-section-single",
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                children: [
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "subsection-title",
-                                                                        children: "Düzenli Kullanılan İlaçlar"
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 651,
-                                                                        columnNumber: 25
-                                                                    }, this),
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "health-info-box",
-                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                                                            className: "form-control",
-                                                                            id: "medications",
-                                                                            name: "medications",
-                                                                            value: formData.medications,
-                                                                            onChange: handleInputChange,
-                                                                            placeholder: "Varsa yazınız",
-                                                                            rows: 3
-                                                                        }, void 0, false, {
-                                                                            fileName: "[project]/src/app/analysis/page.tsx",
-                                                                            lineNumber: 653,
-                                                                            columnNumber: 27
-                                                                        }, this)
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 652,
-                                                                        columnNumber: 25
-                                                                    }, this)
-                                                                ]
-                                                            }, void 0, true, {
-                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 650,
-                                                                columnNumber: 23
-                                                            }, this),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                children: [
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "subsection-title",
-                                                                        children: "Son 6 Ayda Geçirilen Önemli Hastalıklar"
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 665,
-                                                                        columnNumber: 25
-                                                                    }, this),
-                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "health-info-box",
-                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                                                            className: "form-control",
-                                                                            id: "recentIllnesses",
-                                                                            name: "recentIllnesses",
-                                                                            value: formData.recentIllnesses,
-                                                                            onChange: handleInputChange,
-                                                                            placeholder: "Varsa yazınız",
-                                                                            rows: 3
-                                                                        }, void 0, false, {
-                                                                            fileName: "[project]/src/app/analysis/page.tsx",
-                                                                            lineNumber: 667,
-                                                                            columnNumber: 27
-                                                                        }, this)
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 666,
-                                                                        columnNumber: 25
-                                                                    }, this)
-                                                                ]
-                                                            }, void 0, true, {
-                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 664,
-                                                                columnNumber: 23
-                                                            }, this)
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 649,
-                                                        columnNumber: 21
+                                                        lineNumber: 177,
+                                                        columnNumber: 23
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "blood-test-section",
@@ -1596,8 +620,8 @@ function Analysis() {
                                                                 children: "Kan Tahlili Sonuçları"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 682,
-                                                                columnNumber: 23
+                                                                lineNumber: 305,
+                                                                columnNumber: 25
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                 className: "file-upload-container excel-upload-modern",
@@ -1610,109 +634,27 @@ function Analysis() {
                                                                 },
                                                                 children: [
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "excel-icon-circle",
-                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                                                                            width: "48",
-                                                                            height: "48",
-                                                                            viewBox: "0 0 48 48",
-                                                                            fill: "none",
-                                                                            children: [
-                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("defs", {
-                                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("linearGradient", {
-                                                                                        id: "excelGradient",
-                                                                                        x1: "0",
-                                                                                        y1: "0",
-                                                                                        x2: "48",
-                                                                                        y2: "48",
-                                                                                        gradientUnits: "userSpaceOnUse",
-                                                                                        children: [
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
-                                                                                                stopColor: "#4CAF50"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 691,
-                                                                                                columnNumber: 33
-                                                                                            }, this),
-                                                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("stop", {
-                                                                                                offset: "1",
-                                                                                                stopColor: "#2196F3"
-                                                                                            }, void 0, false, {
-                                                                                                fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                                lineNumber: 692,
-                                                                                                columnNumber: 33
-                                                                                            }, this)
-                                                                                        ]
-                                                                                    }, void 0, true, {
-                                                                                        fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                        lineNumber: 690,
-                                                                                        columnNumber: 31
-                                                                                    }, this)
-                                                                                }, void 0, false, {
-                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                    lineNumber: 689,
-                                                                                    columnNumber: 29
-                                                                                }, this),
-                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
-                                                                                    cx: "24",
-                                                                                    cy: "24",
-                                                                                    r: "22",
-                                                                                    fill: "url(#excelGradient)"
-                                                                                }, void 0, false, {
-                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                    lineNumber: 695,
-                                                                                    columnNumber: 29
-                                                                                }, this),
-                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
-                                                                                    x: "14",
-                                                                                    y: "14",
-                                                                                    width: "20",
-                                                                                    height: "20",
-                                                                                    rx: "4",
-                                                                                    fill: "#fff"
-                                                                                }, void 0, false, {
-                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                    lineNumber: 696,
-                                                                                    columnNumber: 29
-                                                                                }, this),
-                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
-                                                                                    x: "24",
-                                                                                    y: "30",
-                                                                                    textAnchor: "middle",
-                                                                                    fontSize: "16",
-                                                                                    fontWeight: "bold",
-                                                                                    fill: "#4CAF50",
-                                                                                    children: "X"
-                                                                                }, void 0, false, {
-                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
-                                                                                    lineNumber: 697,
-                                                                                    columnNumber: 29
-                                                                                }, this)
-                                                                            ]
-                                                                        }, void 0, true, {
-                                                                            fileName: "[project]/src/app/analysis/page.tsx",
-                                                                            lineNumber: 688,
-                                                                            columnNumber: 27
-                                                                        }, this)
+                                                                        className: "excel-icon-circle"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 687,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 310,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "excel-upload-title",
                                                                         children: "Excel Dosyanızı Seçin veya Sürükleyin"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 700,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 313,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                         className: "excel-upload-desc",
                                                                         children: "Sadece .xlsx veya .xls formatında dosya yükleyebilirsiniz"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 701,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 314,
+                                                                        columnNumber: 27
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                         type: "file",
@@ -1726,20 +668,20 @@ function Analysis() {
                                                                         }
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 702,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 315,
+                                                                        columnNumber: 27
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 683,
-                                                                columnNumber: 23
+                                                                lineNumber: 306,
+                                                                columnNumber: 25
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 681,
-                                                        columnNumber: 21
+                                                        lineNumber: 304,
+                                                        columnNumber: 23
                                                     }, this),
                                                     fileSuccess && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         style: {
@@ -1755,81 +697,114 @@ function Analysis() {
                                                         children: "Dosya başarıyla yüklendi."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 715,
-                                                        columnNumber: 23
+                                                        lineNumber: 328,
+                                                        columnNumber: 27
+                                                    }, this),
+                                                    error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "alert alert-danger",
+                                                        role: "alert",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                                                className: "fas fa-exclamation-circle me-2"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/src/app/analysis/page.tsx",
+                                                                lineNumber: 344,
+                                                                columnNumber: 29
+                                                            }, this),
+                                                            error
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/src/app/analysis/page.tsx",
+                                                        lineNumber: 343,
+                                                        columnNumber: 27
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "text-center mt-4",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                             type: "submit",
-                                                            className: `btn-analyze ${!isFormValid ? 'disabled' : ''}`,
-                                                            disabled: !isFormValid,
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
-                                                                    className: "fas fa-flask me-2"
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/analysis/page.tsx",
-                                                                    lineNumber: 726,
-                                                                    columnNumber: 25
-                                                                }, this),
-                                                                isFormValid ? 'Analize Başla' : 'Analize Başla'
-                                                            ]
-                                                        }, void 0, true, {
+                                                            className: "btn-analyze",
+                                                            disabled: !isFormValid || isLoading,
+                                                            children: isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                        className: "spinner-border spinner-border-sm me-2",
+                                                                        role: "status",
+                                                                        "aria-hidden": "true"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/analysis/page.tsx",
+                                                                        lineNumber: 357,
+                                                                        columnNumber: 33
+                                                                    }, this),
+                                                                    "Analiz Ediliyor..."
+                                                                ]
+                                                            }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("i", {
+                                                                        className: "fas fa-flask me-2"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/src/app/analysis/page.tsx",
+                                                                        lineNumber: 362,
+                                                                        columnNumber: 33
+                                                                    }, this),
+                                                                    "Analiz Et"
+                                                                ]
+                                                            }, void 0, true)
+                                                        }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/page.tsx",
-                                                            lineNumber: 721,
-                                                            columnNumber: 23
+                                                            lineNumber: 350,
+                                                            columnNumber: 25
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 720,
-                                                        columnNumber: 21
+                                                        lineNumber: 349,
+                                                        columnNumber: 23
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                lineNumber: 212,
-                                                columnNumber: 19
+                                                lineNumber: 175,
+                                                columnNumber: 21
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                        lineNumber: 210,
-                                        columnNumber: 17
+                                        lineNumber: 173,
+                                        columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/page.tsx",
-                                    lineNumber: 209,
-                                    columnNumber: 15
+                                    lineNumber: 172,
+                                    columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                lineNumber: 208,
-                                columnNumber: 13
+                                lineNumber: 171,
+                                columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/analysis/page.tsx",
-                        lineNumber: 203,
-                        columnNumber: 11
+                        lineNumber: 166,
+                        columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/analysis/page.tsx",
-                    lineNumber: 202,
-                    columnNumber: 9
+                    lineNumber: 165,
+                    columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/analysis/page.tsx",
-                lineNumber: 201,
-                columnNumber: 7
+                lineNumber: 164,
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/analysis/page.tsx",
-        lineNumber: 199,
-        columnNumber: 5
+        lineNumber: 162,
+        columnNumber: 7
     }, this);
 }
-_s(Analysis, "xWOlBc0yP+of6LEti+VlqFzYtzs=", false, function() {
+_s(Analysis, "t13bJTK+LgwkWkpwBlYFWyZ6UWs=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];
