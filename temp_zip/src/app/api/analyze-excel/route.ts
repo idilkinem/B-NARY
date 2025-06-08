@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
           recentIllnesses: patientRow[headers.indexOf('SonHastalıklar')] || formPatientInfo.recentIllnesses
         };
         // Test sonuçlarını al (3. satırdan itibaren)
-        testResults = json.slice(2).map((row: any[]) => {
+        testResults = (json.slice(2) as any[][]).map((row: any[]) => {
           const value = parseFloat(row[1]);
           const [min, max] = (row[2] || '').split('-').map(Number);
           let status: 'normal' | 'warning' | 'danger' = 'normal';
