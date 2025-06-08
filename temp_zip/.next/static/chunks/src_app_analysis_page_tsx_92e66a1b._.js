@@ -599,9 +599,83 @@ function Analysis() {
                                                                 style: {
                                                                     cursor: 'pointer'
                                                                 },
+                                                                tabIndex: 0,
+                                                                onKeyDown: (e)=>{
+                                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                                        const input = document.getElementById('bloodTestResults');
+                                                                        if (input) input.click();
+                                                                    }
+                                                                },
                                                                 children: [
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                                        className: "excel-icon-circle"
+                                                                        className: "excel-icon-circle",
+                                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                                            width: "36",
+                                                                            height: "36",
+                                                                            viewBox: "0 0 36 36",
+                                                                            fill: "none",
+                                                                            xmlns: "http://www.w3.org/2000/svg",
+                                                                            children: [
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                                                    cx: "18",
+                                                                                    cy: "18",
+                                                                                    r: "18",
+                                                                                    fill: "#217346"
+                                                                                }, void 0, false, {
+                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
+                                                                                    lineNumber: 265,
+                                                                                    columnNumber: 57
+                                                                                }, this),
+                                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("g", {
+                                                                                    children: [
+                                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
+                                                                                            x: "10",
+                                                                                            y: "10",
+                                                                                            width: "16",
+                                                                                            height: "16",
+                                                                                            rx: "2",
+                                                                                            fill: "#fff"
+                                                                                        }, void 0, false, {
+                                                                                            fileName: "[project]/src/app/analysis/page.tsx",
+                                                                                            lineNumber: 267,
+                                                                                            columnNumber: 61
+                                                                                        }, this),
+                                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                                                            d: "M14 14L22 22M22 14L14 22",
+                                                                                            stroke: "#217346",
+                                                                                            strokeWidth: "2",
+                                                                                            strokeLinecap: "round"
+                                                                                        }, void 0, false, {
+                                                                                            fileName: "[project]/src/app/analysis/page.tsx",
+                                                                                            lineNumber: 268,
+                                                                                            columnNumber: 61
+                                                                                        }, this),
+                                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("text", {
+                                                                                            x: "18",
+                                                                                            y: "20.5",
+                                                                                            textAnchor: "middle",
+                                                                                            fontSize: "8",
+                                                                                            fill: "#217346",
+                                                                                            fontWeight: "bold",
+                                                                                            fontFamily: "Arial",
+                                                                                            children: "X"
+                                                                                        }, void 0, false, {
+                                                                                            fileName: "[project]/src/app/analysis/page.tsx",
+                                                                                            lineNumber: 269,
+                                                                                            columnNumber: 61
+                                                                                        }, this)
+                                                                                    ]
+                                                                                }, void 0, true, {
+                                                                                    fileName: "[project]/src/app/analysis/page.tsx",
+                                                                                    lineNumber: 266,
+                                                                                    columnNumber: 57
+                                                                                }, this)
+                                                                            ]
+                                                                        }, void 0, true, {
+                                                                            fileName: "[project]/src/app/analysis/page.tsx",
+                                                                            lineNumber: 264,
+                                                                            columnNumber: 53
+                                                                        }, this)
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
                                                                         lineNumber: 263,
@@ -612,7 +686,7 @@ function Analysis() {
                                                                         children: "Excel Dosyanızı Seçin veya Sürükleyin"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 266,
+                                                                        lineNumber: 273,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -620,7 +694,7 @@ function Analysis() {
                                                                         children: "Sadece .xlsx veya .xls formatında dosya yükleyebilirsiniz"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 269,
+                                                                        lineNumber: 276,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -635,7 +709,7 @@ function Analysis() {
                                                                         }
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 272,
+                                                                        lineNumber: 279,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
@@ -664,7 +738,7 @@ function Analysis() {
                                                         children: "Dosya başarıyla yüklendi."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 285,
+                                                        lineNumber: 292,
                                                         columnNumber: 45
                                                     }, this),
                                                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -675,14 +749,14 @@ function Analysis() {
                                                                 className: "fas fa-exclamation-circle me-2"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/page.tsx",
-                                                                lineNumber: 301,
+                                                                lineNumber: 308,
                                                                 columnNumber: 49
                                                             }, this),
                                                             error
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 300,
+                                                        lineNumber: 307,
                                                         columnNumber: 45
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -698,7 +772,7 @@ function Analysis() {
                                                                         "aria-hidden": "true"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 313,
+                                                                        lineNumber: 320,
                                                                         columnNumber: 57
                                                                     }, this),
                                                                     "Analiz Ediliyor..."
@@ -709,7 +783,7 @@ function Analysis() {
                                                                         className: "fas fa-flask me-2"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                                        lineNumber: 319,
+                                                                        lineNumber: 326,
                                                                         columnNumber: 57
                                                                     }, this),
                                                                     "Analiz Et"
@@ -717,12 +791,12 @@ function Analysis() {
                                                             }, void 0, true)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/page.tsx",
-                                                            lineNumber: 307,
+                                                            lineNumber: 314,
                                                             columnNumber: 45
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/analysis/page.tsx",
-                                                        lineNumber: 306,
+                                                        lineNumber: 313,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
@@ -770,7 +844,7 @@ function Analysis() {
         columnNumber: 9
     }, this);
 }
-_s(Analysis, "Lzn0OT5JbOBSAp39hMpCZUl+WJM=", false, function() {
+_s(Analysis, "/IUf5tXYs4spmAaO11a9RoIrEWw=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
     ];

@@ -259,9 +259,16 @@ export default function Analysis() {
                                             <div className="file-upload-container excel-upload-modern" onClick={() => {
                                                 const input = document.getElementById('bloodTestResults') as HTMLInputElement | null;
                                                 if (input) input.click();
-                                            }} style={{cursor: 'pointer'}}>
+                                            }} style={{cursor: 'pointer'}} tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { const input = document.getElementById('bloodTestResults') as HTMLInputElement | null; if (input) input.click(); } }}>
                                                 <div className="excel-icon-circle">
-                                                    {/* SVG ICON */}
+                                                    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <circle cx="18" cy="18" r="18" fill="#217346"/>
+                                                        <g>
+                                                            <rect x="10" y="10" width="16" height="16" rx="2" fill="#fff"/>
+                                                            <path d="M14 14L22 22M22 14L14 22" stroke="#217346" strokeWidth="2" strokeLinecap="round"/>
+                                                            <text x="18" y="20.5" textAnchor="middle" fontSize="8" fill="#217346" fontWeight="bold" fontFamily="Arial">X</text>
+                                                        </g>
+                                                    </svg>
                                                 </div>
                                                 <div className="excel-upload-title">Excel Dosyanızı Seçin veya
                                                     Sürükleyin

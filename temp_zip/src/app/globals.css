@@ -259,7 +259,7 @@ body::before {
 .btn-analyze {
   background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   color: white !important;
-  border: none;
+  /* border: none; */
   padding: 1rem 2.5rem;
   border-radius: 25px;
   font-weight: 600;
@@ -867,14 +867,24 @@ body::before {
 .btn-analyze {
   background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
   color: white !important;
-  border: none;
-  padding: 12px 30px;
+  /* border: none; */
+  padding: 1rem 2.5rem;
   border-radius: 25px;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+  min-width: 250px;
+  background-size: 300% 300%;
+  animation: hologram 3s ease infinite;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  position: relative;
+  z-index: 1010 !important;
+  text-decoration: none; /* Alt çizgiyi kaldır */
 }
 
-.btn-analyze:hover {
+.btn-analyze:hover:not(.disabled) {
   background: linear-gradient(45deg, #4CAF50, #2196F3, #4CAF50);
   background-size: 300% 300%;
   transform: translateY(-2px);
@@ -884,7 +894,33 @@ body::before {
 
 .btn-analyze.disabled {
   background: #a5d6a7;
+  color: #9e9e9e;
   cursor: not-allowed;
+  animation: none;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.btn-analyze i {
+  transition: transform 0.3s ease;
+}
+
+.btn-analyze:hover:not(.disabled) i {
+  transform: rotate(15deg);
+}
+
+@media (max-width: 768px) {
+  .btn-analyze {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    min-width: 200px;
+  }
+  
+  .btn-analyze.disabled {
+    font-size: 0.9rem;
+  }
 }
 
 .back-button {

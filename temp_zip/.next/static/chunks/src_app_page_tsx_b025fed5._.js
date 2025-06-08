@@ -1530,7 +1530,7 @@ function Home() {
         columnNumber: 5
     }, this);
 }
-_s(Home, "VqxnK5GC90nz3rfn0tWhw8BNlXw=");
+_s(Home, "WVHipa07wjab6sIHPbsQMZJ+sPM=");
 _c = Home;
 var _c;
 __turbopack_context__.k.register(_c, "Home");
