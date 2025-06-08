@@ -1,4 +1,4 @@
-(globalThis.TURBOPACK = globalThis.TURBOPACK || []).push(["static/chunks/src_app_analysis_result_page_tsx_f40020a4._.js", {
+(globalThis.TURBOPACK = globalThis.TURBOPACK || []).push([typeof document === "object" ? document.currentScript : undefined, {
 
 "[project]/src/app/analysis/result/page.tsx [app-client] (ecmascript)": ((__turbopack_context__) => {
 "use strict";
@@ -10,17 +10,14 @@ __turbopack_context__.s({
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 'use client';
 ;
 ;
-;
 function AnalysisResult() {
     _s();
-    const searchParams = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"])();
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [analysisResults, setAnalysisResults] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const handlePrint = ()=>{
@@ -28,27 +25,23 @@ function AnalysisResult() {
     };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AnalysisResult.useEffect": ()=>{
-            // URL'den parametreleri al
-            const params = {
-                firstName: searchParams.get('firstName'),
-                lastName: searchParams.get('lastName'),
-                tcNo: searchParams.get('tcNo'),
-                birthDate: searchParams.get('birthDate'),
-                height: searchParams.get('height'),
-                weight: searchParams.get('weight'),
-                bloodType: searchParams.get('bloodType'),
-                gender: searchParams.get('gender'),
-                chronicDiseases: searchParams.get('chronicDiseases')?.split(','),
-                allergies: searchParams.get('allergies')?.split(','),
-                medications: searchParams.get('medications'),
-                recentIllnesses: searchParams.get('recentIllnesses')
-            };
-            // Burada backend'den analiz sonuçlarını alacağız
-            // Şimdilik örnek veri kullanıyoruz
+            // Get form data from sessionStorage
+            const formData = sessionStorage.getItem('analysisFormData');
+            let patientInfo = {};
+            if (formData) {
+                patientInfo = JSON.parse(formData);
+                // Parse arrays if needed
+                if (typeof patientInfo['chronicDiseases'] === 'string') {
+                    patientInfo['chronicDiseases'] = patientInfo['chronicDiseases'].split(',');
+                }
+                if (typeof patientInfo['allergies'] === 'string') {
+                    patientInfo['allergies'] = patientInfo['allergies'].split(',');
+                }
+            }
             setTimeout({
                 "AnalysisResult.useEffect": ()=>{
                     setAnalysisResults({
-                        patientInfo: params,
+                        patientInfo,
                         testResults: [
                             {
                                 test: 'Hemoglobin',
@@ -115,9 +108,7 @@ function AnalysisResult() {
                 }
             }["AnalysisResult.useEffect"], 2000);
         }
-    }["AnalysisResult.useEffect"], [
-        searchParams
-    ]);
+    }["AnalysisResult.useEffect"], []);
     if (isLoading) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "analysis-page",
@@ -134,37 +125,37 @@ function AnalysisResult() {
                                 children: "Yükleniyor..."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/analysis/result/page.tsx",
-                                lineNumber: 70,
-                                columnNumber: 15
+                                lineNumber: 63,
+                                columnNumber: 29
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                            lineNumber: 69,
-                            columnNumber: 13
+                            lineNumber: 62,
+                            columnNumber: 25
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                             className: "mt-3",
                             children: "Analiz sonuçları yükleniyor..."
                         }, void 0, false, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                            lineNumber: 72,
-                            columnNumber: 13
+                            lineNumber: 65,
+                            columnNumber: 25
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                    lineNumber: 68,
-                    columnNumber: 11
+                    lineNumber: 61,
+                    columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/analysis/result/page.tsx",
-                lineNumber: 67,
-                columnNumber: 9
+                lineNumber: 60,
+                columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/analysis/result/page.tsx",
-            lineNumber: 66,
-            columnNumber: 7
+            lineNumber: 59,
+            columnNumber: 13
         }, this);
     }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -180,15 +171,15 @@ function AnalysisResult() {
                             className: "fas fa-arrow-left me-2"
                         }, void 0, false, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                            lineNumber: 83,
-                            columnNumber: 11
+                            lineNumber: 76,
+                            columnNumber: 21
                         }, this),
                         "Geri Dön"
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                    lineNumber: 82,
-                    columnNumber: 9
+                    lineNumber: 75,
+                    columnNumber: 17
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "analysis-form-container",
@@ -200,13 +191,13 @@ function AnalysisResult() {
                                 children: "Analiz Sonuçları"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/analysis/result/page.tsx",
-                                lineNumber: 88,
-                                columnNumber: 13
+                                lineNumber: 81,
+                                columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                            lineNumber: 87,
-                            columnNumber: 11
+                            lineNumber: 80,
+                            columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "form-section",
@@ -216,8 +207,8 @@ function AnalysisResult() {
                                     children: "Hasta Bilgileri"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                    lineNumber: 93,
-                                    columnNumber: 13
+                                    lineNumber: 86,
+                                    columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "patient-info-section",
@@ -230,8 +221,8 @@ function AnalysisResult() {
                                                     children: "Kişisel Bilgiler"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 98,
-                                                    columnNumber: 17
+                                                    lineNumber: 91,
+                                                    columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "patient-info-grid",
@@ -244,8 +235,8 @@ function AnalysisResult() {
                                                                     children: "Ad Soyad"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 101,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 94,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -256,14 +247,14 @@ function AnalysisResult() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 102,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 95,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 100,
-                                                            columnNumber: 19
+                                                            lineNumber: 93,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -273,22 +264,22 @@ function AnalysisResult() {
                                                                     children: "TC Kimlik No"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 105,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 99,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
                                                                     children: analysisResults.patientInfo.tcNo
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 106,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 100,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 104,
-                                                            columnNumber: 19
+                                                            lineNumber: 98,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -298,22 +289,22 @@ function AnalysisResult() {
                                                                     children: "Doğum Tarihi"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 109,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 103,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
                                                                     children: new Date(analysisResults.patientInfo.birthDate).toLocaleDateString('tr-TR')
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 110,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 104,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 108,
-                                                            columnNumber: 19
+                                                            lineNumber: 102,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -323,34 +314,34 @@ function AnalysisResult() {
                                                                     children: "Cinsiyet"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 113,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 108,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
                                                                     children: analysisResults.patientInfo.gender === 'male' ? 'Erkek' : 'Kadın'
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 114,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 109,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 112,
-                                                            columnNumber: 19
+                                                            lineNumber: 107,
+                                                            columnNumber: 37
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 99,
-                                                    columnNumber: 17
+                                                    lineNumber: 92,
+                                                    columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                            lineNumber: 97,
-                                            columnNumber: 15
+                                            lineNumber: 90,
+                                            columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "patient-info-group",
@@ -360,8 +351,8 @@ function AnalysisResult() {
                                                     children: "Fiziksel Bilgiler"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 121,
-                                                    columnNumber: 17
+                                                    lineNumber: 117,
+                                                    columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "patient-info-grid",
@@ -374,8 +365,8 @@ function AnalysisResult() {
                                                                     children: "Boy"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 124,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 120,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -385,14 +376,14 @@ function AnalysisResult() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 125,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 121,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 123,
-                                                            columnNumber: 19
+                                                            lineNumber: 119,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -402,8 +393,8 @@ function AnalysisResult() {
                                                                     children: "Kilo"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 128,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 125,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -413,14 +404,14 @@ function AnalysisResult() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 129,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 126,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 127,
-                                                            columnNumber: 19
+                                                            lineNumber: 124,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -430,8 +421,8 @@ function AnalysisResult() {
                                                                     children: "Vücut Kitle İndeksi (BMI)"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 132,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 130,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -441,14 +432,14 @@ function AnalysisResult() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 133,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 131,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 131,
-                                                            columnNumber: 19
+                                                            lineNumber: 129,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item",
@@ -458,34 +449,34 @@ function AnalysisResult() {
                                                                     children: "Kan Grubu"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 138,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 136,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
                                                                     children: analysisResults.patientInfo.bloodType
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 139,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 137,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 137,
-                                                            columnNumber: 19
+                                                            lineNumber: 135,
+                                                            columnNumber: 37
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 122,
-                                                    columnNumber: 17
+                                                    lineNumber: 118,
+                                                    columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                            lineNumber: 120,
-                                            columnNumber: 15
+                                            lineNumber: 116,
+                                            columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "patient-info-group",
@@ -495,8 +486,8 @@ function AnalysisResult() {
                                                     children: "Sağlık Bilgileri"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 146,
-                                                    columnNumber: 17
+                                                    lineNumber: 145,
+                                                    columnNumber: 33
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "patient-info-grid",
@@ -509,8 +500,8 @@ function AnalysisResult() {
                                                                     children: "Kronik Hastalıklar"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 152,
-                                                                    columnNumber: 23
+                                                                    lineNumber: 151,
+                                                                    columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-list-container",
@@ -521,26 +512,26 @@ function AnalysisResult() {
                                                                                     className: "fas fa-circle-dot me-2"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                                    lineNumber: 156,
-                                                                                    columnNumber: 29
+                                                                                    lineNumber: 155,
+                                                                                    columnNumber: 61
                                                                                 }, this),
                                                                                 disease
                                                                             ]
                                                                         }, index, true, {
                                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                            lineNumber: 155,
-                                                                            columnNumber: 27
+                                                                            lineNumber: 154,
+                                                                            columnNumber: 57
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 153,
-                                                                    columnNumber: 23
+                                                                    lineNumber: 152,
+                                                                    columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 151,
-                                                            columnNumber: 21
+                                                            lineNumber: 150,
+                                                            columnNumber: 45
                                                         }, this),
                                                         Array.isArray(analysisResults.patientInfo.allergies) && analysisResults.patientInfo.allergies.length > 0 && analysisResults.patientInfo.allergies[0] !== 'yok' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item full-width",
@@ -550,8 +541,8 @@ function AnalysisResult() {
                                                                     children: "Alerjiler"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 168,
-                                                                    columnNumber: 23
+                                                                    lineNumber: 167,
+                                                                    columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-list-container",
@@ -562,26 +553,26 @@ function AnalysisResult() {
                                                                                     className: "fas fa-circle-dot me-2"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                                    lineNumber: 172,
-                                                                                    columnNumber: 29
+                                                                                    lineNumber: 171,
+                                                                                    columnNumber: 61
                                                                                 }, this),
                                                                                 allergy
                                                                             ]
                                                                         }, index, true, {
                                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                            lineNumber: 171,
-                                                                            columnNumber: 27
+                                                                            lineNumber: 170,
+                                                                            columnNumber: 57
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 169,
-                                                                    columnNumber: 23
+                                                                    lineNumber: 168,
+                                                                    columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 167,
-                                                            columnNumber: 21
+                                                            lineNumber: 166,
+                                                            columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item full-width",
@@ -591,8 +582,8 @@ function AnalysisResult() {
                                                                     children: "Düzenli Kullanılan İlaçlar"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 181,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 180,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -605,38 +596,38 @@ function AnalysisResult() {
                                                                                         className: "fas fa-pills me-2"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                                        lineNumber: 187,
-                                                                                        columnNumber: 31
+                                                                                        lineNumber: 186,
+                                                                                        columnNumber: 61
                                                                                     }, this),
                                                                                     med
                                                                                 ]
                                                                             }, index, true, {
                                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                                lineNumber: 186,
-                                                                                columnNumber: 29
+                                                                                lineNumber: 185,
+                                                                                columnNumber: 57
                                                                             }, this))
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                        lineNumber: 184,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 183,
+                                                                        columnNumber: 49
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                         className: "text-muted",
                                                                         children: "Belirtilmemiş"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                        lineNumber: 193,
-                                                                        columnNumber: 25
+                                                                        lineNumber: 192,
+                                                                        columnNumber: 49
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 182,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 181,
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 180,
-                                                            columnNumber: 19
+                                                            lineNumber: 179,
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: "patient-info-item full-width",
@@ -646,8 +637,8 @@ function AnalysisResult() {
                                                                     children: "Son 6 Ayda Geçirilen Önemli Hastalıklar"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                                    lineNumber: 199,
-                                                                    columnNumber: 21
+                                                                    lineNumber: 198,
+                                                                    columnNumber: 41
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                                     className: "patient-info-value",
@@ -661,61 +652,61 @@ function AnalysisResult() {
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                                         lineNumber: 205,
-                                                                                        columnNumber: 31
+                                                                                        columnNumber: 61
                                                                                     }, this),
                                                                                     illness
                                                                                 ]
                                                                             }, index, true, {
                                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                                 lineNumber: 204,
-                                                                                columnNumber: 29
+                                                                                columnNumber: 57
                                                                             }, this))
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                         lineNumber: 202,
-                                                                        columnNumber: 25
+                                                                        columnNumber: 49
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                         className: "text-muted",
                                                                         children: "Belirtilmemiş"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                         lineNumber: 211,
-                                                                        columnNumber: 25
+                                                                        columnNumber: 49
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                     lineNumber: 200,
-                                                                    columnNumber: 21
+                                                                    columnNumber: 41
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                            lineNumber: 198,
-                                                            columnNumber: 19
+                                                            lineNumber: 197,
+                                                            columnNumber: 37
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                                    lineNumber: 147,
-                                                    columnNumber: 17
+                                                    lineNumber: 146,
+                                                    columnNumber: 33
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                                            lineNumber: 145,
-                                            columnNumber: 15
+                                            lineNumber: 144,
+                                            columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                                    lineNumber: 96,
-                                    columnNumber: 13
+                                    lineNumber: 89,
+                                    columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
-                            lineNumber: 92,
-                            columnNumber: 11
+                            lineNumber: 85,
+                            columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "form-section",
@@ -726,7 +717,7 @@ function AnalysisResult() {
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 222,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "table-responsive",
@@ -741,39 +732,39 @@ function AnalysisResult() {
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
                                                             lineNumber: 227,
-                                                            columnNumber: 21
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                             children: "Değer"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
                                                             lineNumber: 228,
-                                                            columnNumber: 21
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                             children: "Normal Aralık"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
                                                             lineNumber: 229,
-                                                            columnNumber: 21
+                                                            columnNumber: 37
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
                                                             children: "Durum"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/analysis/result/page.tsx",
                                                             lineNumber: 230,
-                                                            columnNumber: 21
+                                                            columnNumber: 37
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                                     lineNumber: 226,
-                                                    columnNumber: 19
+                                                    columnNumber: 33
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                 lineNumber: 225,
-                                                columnNumber: 17
+                                                columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
                                                 children: analysisResults.testResults.map((item, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -783,21 +774,21 @@ function AnalysisResult() {
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                 lineNumber: 236,
-                                                                columnNumber: 23
+                                                                columnNumber: 41
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                 children: item.value
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                 lineNumber: 237,
-                                                                columnNumber: 23
+                                                                columnNumber: 41
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                 children: item.normalRange
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                 lineNumber: 238,
-                                                                columnNumber: 23
+                                                                columnNumber: 41
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
                                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -811,35 +802,35 @@ function AnalysisResult() {
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                                 lineNumber: 239,
-                                                                columnNumber: 23
+                                                                columnNumber: 41
                                                             }, this)
                                                         ]
                                                     }, index, true, {
                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                                         lineNumber: 235,
-                                                        columnNumber: 21
+                                                        columnNumber: 37
                                                     }, this))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                 lineNumber: 233,
-                                                columnNumber: 17
+                                                columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                         lineNumber: 224,
-                                        columnNumber: 15
+                                        columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 223,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
                             lineNumber: 221,
-                            columnNumber: 11
+                            columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "form-section",
@@ -850,7 +841,7 @@ function AnalysisResult() {
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 254,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "ai-comment",
@@ -859,18 +850,18 @@ function AnalysisResult() {
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                         lineNumber: 256,
-                                        columnNumber: 15
+                                        columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 255,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
                             lineNumber: 253,
-                            columnNumber: 11
+                            columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "form-section",
@@ -881,7 +872,7 @@ function AnalysisResult() {
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 262,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "recommendations",
@@ -895,30 +886,30 @@ function AnalysisResult() {
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                                         lineNumber: 267,
-                                                        columnNumber: 21
+                                                        columnNumber: 41
                                                     }, this),
                                                     item
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                                 lineNumber: 266,
-                                                columnNumber: 19
+                                                columnNumber: 37
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                         lineNumber: 264,
-                                        columnNumber: 15
+                                        columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/analysis/result/page.tsx",
                                     lineNumber: 263,
-                                    columnNumber: 13
+                                    columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
                             lineNumber: 261,
-                            columnNumber: 11
+                            columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "text-center mt-4",
@@ -931,43 +922,39 @@ function AnalysisResult() {
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/analysis/result/page.tsx",
                                         lineNumber: 278,
-                                        columnNumber: 15
+                                        columnNumber: 29
                                     }, this),
                                     "PDF İndir"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/analysis/result/page.tsx",
                                 lineNumber: 277,
-                                columnNumber: 13
+                                columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/analysis/result/page.tsx",
                             lineNumber: 276,
-                            columnNumber: 11
+                            columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/analysis/result/page.tsx",
-                    lineNumber: 86,
-                    columnNumber: 9
+                    lineNumber: 79,
+                    columnNumber: 17
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/analysis/result/page.tsx",
-            lineNumber: 81,
-            columnNumber: 7
+            lineNumber: 74,
+            columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/analysis/result/page.tsx",
-        lineNumber: 80,
-        columnNumber: 5
+        lineNumber: 73,
+        columnNumber: 9
     }, this);
 }
-_s(AnalysisResult, "LATOZP2advmKL51sna9+J2aT+bQ=", false, function() {
-    return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSearchParams"]
-    ];
-});
+_s(AnalysisResult, "lIHdje95HjZmOyf2Z6v4yUDiK8Y=");
 _c = AnalysisResult;
 var _c;
 __turbopack_context__.k.register(_c, "AnalysisResult");
