@@ -14,7 +14,7 @@ export default function AnalysisResult() {
     useEffect(() => {
         // Get form data from sessionStorage
         const formData = sessionStorage.getItem('analysisFormData');
-        let patientInfo = {};
+        let patientInfo: { [key: string]: any } = {};
         if (formData) {
             patientInfo = JSON.parse(formData);
             // Parse arrays if needed
