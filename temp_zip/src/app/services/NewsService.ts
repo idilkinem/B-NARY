@@ -23,7 +23,7 @@ export class NewsService {
   private readonly baseUrl: string = 'https://newsapi.org/v2';
 
   constructor() {
-    this.apiKey = 'd2596c371e6d4dc5b746bf558423a3e4' // TODO: API key'i gizlemek için .env dosyası kullanılacak
+    this.apiKey = process.env.NEWS_API_KEY as string;
   }
 
   /**
