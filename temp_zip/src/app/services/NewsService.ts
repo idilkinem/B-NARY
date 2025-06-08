@@ -34,38 +34,18 @@ export class NewsService {
    */
   async getHealthNews(pageSize: number = 10, page: number = 1): Promise<NewsArticle[]> {
     try {
-
-  
-      // API'dan çekeceğimiz maksimum haber sayısı (NewsAPI'de max 100)
-      const fetchSize = 100;
-  
-      const params = new URLSearchParams({
-        q: '(+sağlık +bilim)',
-        language: 'tr',
-        sortBy: 'publishedAt',
-        pageSize: fetchSize.toString(),  // çok haber çekiyoruz
-        page: page.toString(),
-        apiKey: this.apiKey
-      });
-  
-      const response = await fetch(`${this.baseUrl}/everything?${params}`);
+      const response = await fetch(`/api/news?pageSize=${pageSize}&page=${page}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data: NewsResponse = await response.json();
-      console.log(`Toplam sonuç: ${data.totalResults}`);
-  
       const articles = data.articles || [];
-  
       // Fisher–Yates shuffle ile karıştır
       for (let i = articles.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [articles[i], articles[j]] = [articles[j], articles[i]];
       }
-  
-      // İlk pageSize tanesini döndür (eğer yeterli yoksa hepsini)
       return articles.slice(0, pageSize);
-  
     } catch (error) {
       console.error('Haberler alınırken bir hata oluştu:', error);
       throw error;
