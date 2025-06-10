@@ -28,3 +28,6 @@ API: Alınan verileri referans aralıklarla karşılaştırır.
 
 Veri Kaynağı: Kullanıcıdan alınacak excel dosyası.
 
+
+Bu linkten projeyi kullanabilirsiniz : https://b-nary-c32l.vercel.app/
+
